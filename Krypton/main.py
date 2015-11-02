@@ -4,15 +4,18 @@
 # encoding=utf8
 
 from pyspark import SparkConf, SparkContext
-from pattern.en import parse
+# from pattern.en import ngrams
 
 conf = SparkConf().setMaster("local[*]").setAppName("Krypton").set("spark.executor.memory", "16g")
 
 def test(line):
 	line = transferEncoding(line.strip())
 	(paperId, title, abstract) = line.split('\t')
-	sentences = splitIntoSentences(abstract)
-	return (paperId, sentences)
+	# sentences = splitIntoSentences(abstract)
+	# ng = ngrams(abstract, n=2)
+	from pattern.en import parse
+	ng = parse(abstract)
+	return (paperId, ng)
 	
 def redu(key, value):
 	# value = value.strip()
@@ -51,7 +54,7 @@ def findCompoundNouns(content):
 
 
 
-sc = SparkContext(conf = conf)
+sc = SparkContext(conf = conf, pyFiles=['/Users/darrenxyli/Documents/Krypton/Krypton/pattern.zip'])
 words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/test.tsv").cache()
 
 pair = words.map(test)
