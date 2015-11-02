@@ -6,7 +6,7 @@
 from pyspark import SparkConf, SparkContext
 # from pattern.en import ngrams
 
-conf = SparkConf().setMaster("local[*]").setAppName("Krypton").set("spark.executor.memory", "16g")
+conf = SparkConf().setMaster("local[*]").setAppName("Krypton")
 
 def test(line):
 	line = transferEncoding(line.strip())
@@ -54,8 +54,8 @@ def findCompoundNouns(content):
 
 
 
-sc = SparkContext(conf = conf, pyFiles=['/Users/darrenxyli/Documents/Krypton/Krypton/pattern.zip'])
-words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/test.tsv").cache()
+sc = SparkContext(conf = conf)
+words = sc.textFile("/user/xli66/test.tsv").cache()
 
 pair = words.map(test)
 # result = pair.reduceByKey(redu)
