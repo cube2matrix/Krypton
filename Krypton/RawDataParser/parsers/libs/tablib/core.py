@@ -12,9 +12,9 @@
 from copy import copy
 from operator import itemgetter
 
-from tablib import formats
+import formats
 
-from tablib.compat import OrderedDict, unicode
+from .compat import OrderedDict, unicode
 
 
 __title__ = 'tablib'
