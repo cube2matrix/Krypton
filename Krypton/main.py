@@ -4,58 +4,97 @@
 # encoding=utf8
 
 from pyspark import SparkConf, SparkContext
-# from pattern.en import ngrams
+import nltk
+import string
 
 conf = SparkConf().setMaster("local[*]").setAppName("Krypton")
 
 def test(line):
 	line = transferEncoding(line.strip())
 	(paperId, title, abstract) = line.split('\t')
-	# sentences = splitIntoSentences(abstract)
-	# ng = ngrams(abstract, n=2)
-	from pattern.en import parse
-	ng = parse(abstract)
-	return (paperId, ng)
-	
+	content = title + abstract
+	sentences = splitIntoSentences(content)
+	result = findCompoundNouns(sentences)
+
+	return (paperId, result)
+
 def redu(key, value):
 	# value = value.strip()
 	# (paperId, title, abstract) = line.split('\t')
 	# return title.split(' ')
 	return value
 
+
 def transferEncoding(content):
 	return content.encode('utf-8')
 
 
 def splitIntoSentences(content):
-    sentencesList = list()
-    for sentence in content.split('.'):
-        if '?' in sentence:
-            sentencesList.extend(sentence.split('?'))
-        elif '!' in sentence:
-            sentencesList.extend(sentence.split('!'))
-        else:
-            sentencesList.append(sentence.strip())
-    return sentencesList
+    return nltk.sent_tokenize(content)
 
 
-def findCompoundNouns(content):
-	
-	utf8EncodingContent = transferEncoding(content)
-	sentences = splitIntoSentences(utf8EncodingContent)
-	# words = tokenizer(sentences)
-	# posTagging()
-	# removePunctuation()
-	# removeSmallWord()
-	# removeNonAlpha()
-	# lowerCase()
-	# removeStopWord()
-	# stemming()
+def tokenizer(sentence):
+	return nltk.word_tokenize(sentence)
 
+
+def posTagging(words):
+	return nltk.pos_tag(words)
+
+
+def removePunctuation(tagsPair):
+	return [ (word, tag) for (word, tag) in tagsPair if not isPunctuation(word)]
+
+
+def isPunctuation(mark):
+	return mark in string.punctuation
+
+
+def removeSmallWord(tagsPair):
+	return [ (word, tag) for (word, tag) in tagsPair if len(word) >= 3]
+
+
+def toLowerCase(tagsPair):
+	return [ (word.lower(), tag) for (word, tag) in tagsPair]
+
+
+def removeStopWord(tagsPair):
+	from nltk.corpus import stopwords
+	stop = stopwords.words('english')
+	return [ (word, tag) for (word, tag) in tagsPair if word not in stop]
+
+
+def stemming(tagsPair):
+	from nltk.stem import WordNetLemmatizer
+	wnl = WordNetLemmatizer()
+	return [ (wnl.lemmatize(word), tag) for (word, tag) in tagsPair]
+
+def getCNPair(tagsPair):
+	nounsTypes = ['NN', 'NNS', 'NNP', 'NNPS']
+	bigramPairs = nltk.bigrams(tagsPair)
+	return [ (pair1[0], pair2[0]) for (pair1, pair2) in bigramPairs if pair1[1] in nounsTypes and pair2[1] in nounsTypes]
+
+
+def findCompoundNouns(sentences):
+
+	CNList = []
+
+	for sentence in sentences:
+		utf8EncodingSentence = transferEncoding(sentence)
+		words = tokenizer(utf8EncodingSentence)
+		pairs = posTagging(words)
+		pairs = removePunctuation(pairs)
+		pairs = removeSmallWord(pairs)
+		pairs = toLowerCase(pairs)
+		pairs = removeStopWord(pairs)
+		pairs = stemming(pairs)
+		for pair in getCNPair(pairs):
+			CNList.append(pair)
+
+	return CNList
 
 
 sc = SparkContext(conf = conf)
-words = sc.textFile("/user/xli66/test.tsv").cache()
+words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/test.tsv").cache()
 
 pair = words.map(test)
 # result = pair.reduceByKey(redu)
