@@ -116,6 +116,10 @@ def mapToEdge(pair):
         edgesList.append(formatEdge((fCNNode, word1)))
         edgesList.append(formatEdge((fCNNode, word2)))
         edgesList.append(formatEdge((fCNNode, paperId)))
+
+        edgesList.append(formatEdge((word1, fCNNode)))
+        edgesList.append(formatEdge((word2, fCNNode)))
+        edgesList.append(formatEdge((paperId, fCNNode)))
     return edgesList
 
 
