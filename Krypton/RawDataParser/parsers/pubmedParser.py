@@ -6,26 +6,25 @@
 """
 MedlineParser provide the parser class to parse medline data and pubmed
 """
-from libs import xml
 from libs import utils
 from libs import saxypy
 from collections import OrderedDict
 import tablib
 import os
-import json
 import codecs
+
 
 __all__ = [
     'parseSingleXml',
     'parseSingleArticle'
 ]
 
+
 class MedlineParser(object):
     '''
     Parser for Medline/PubMed
     '''
     __slots__ = ['xmlPath', 'saveDirc', 'saveFile', 'fileObj', 'headers', 'data']
-
 
     def __init__(self, xmlPath, saveDirc):
         self.xmlPath = xmlPath
@@ -35,7 +34,6 @@ class MedlineParser(object):
         self.headers = ()
         self.data = tablib.Dataset()
 
-
     def generateSaveFileName(self):
         '''
         generate filename of saveing file
@@ -44,14 +42,12 @@ class MedlineParser(object):
         filename = tail.split('.')[0]
         return self.saveDirc + filename + '.tsv'
 
-
     def setHeader(self, dataDict):
         '''
         Fill the csv file with header
         '''
         self.headers = (key for key in dataDict.keys())
         self.data.headers = self.headers
-
 
     def saveToTsv(self):
         '''
@@ -60,10 +56,8 @@ class MedlineParser(object):
         with codecs.open(self.saveFile, 'wb', encoding="utf-8-sig") as f:
             f.write(self.data.tsv.encode('utf-8'))
 
-
     def appendTsv(self, data):
         self.fileObj.write(data)
-
 
     def appendData(self, article):
         '''
@@ -76,7 +70,6 @@ class MedlineParser(object):
 
         values = [value for key, value in parsedDict.iteritems()]
         self.data.append(tuple(values))
-
 
     def tryGetAttr(self, root, attr):
         try:
