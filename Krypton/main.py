@@ -4,6 +4,7 @@
 # encoding=utf8
 
 from pyspark import SparkConf, SparkContext
+from functools import partial
 import nltk
 import string
 
@@ -91,10 +92,29 @@ def seperateEachLine(line):
     return (paperId, list(set(result)))
 
 
+def generateNodeID(pair):
+    paperId = pair[0].strip()
+    cnNodes = pair[1]
+
+    nodes = []
+    nodes.append(paperId)
+    for cnNode in cnNodes:
+        word1 = cnNode[0].strip()
+        word2 = cnNode[1].strip()
+        fCNNode = formatCNNode(cnNode)
+        nodes.append(transferEncoding(word1))
+        nodes.append(transferEncoding(word2))
+        nodes.append(transferEncoding(fCNNode))
+    return list(set(nodes))
+
+
 def formatCNNode(cnNode):
     word1 = cnNode[0]
     word2 = cnNode[1]
-    return word1 + '|' + word2 if word1 < word2 else word2 + '|' + word1
+    if word1 < word2:
+        return "{v1}|{v2}".format(v1=word1, v2=word2)
+    else:
+        return "{v1}|{v2}".format(v1=word2, v2=word1)
 
 
 def formatEdge(edgePair):
@@ -104,22 +124,30 @@ def formatEdge(edgePair):
     return "{v1} {v2}".format(v1=n1, v2=n2)
 
 
-def mapToEdge(pair):
+def mapToEdge(mapBrdCstDict, pair):
     paperId = pair[0].strip()
     cnNodes = pair[1]
 
     edgesList = []
+    idNameMap = mapBrdCstDict.value
+    paperRddId = idNameMap[paperId]
+
     for cnNode in cnNodes:
         word1 = cnNode[0].strip()
         word2 = cnNode[1].strip()
         fCNNode = formatCNNode(cnNode)
-        edgesList.append(formatEdge((fCNNode, word1)))
-        edgesList.append(formatEdge((fCNNode, word2)))
-        edgesList.append(formatEdge((fCNNode, paperId)))
 
-        edgesList.append(formatEdge((word1, fCNNode)))
-        edgesList.append(formatEdge((word2, fCNNode)))
-        edgesList.append(formatEdge((paperId, fCNNode)))
+        word1Id = idNameMap[word1]
+        word2Id = idNameMap[word2]
+        cnNodeId = idNameMap[fCNNode]
+
+        edgesList.append(formatEdge((cnNodeId, word1Id)))
+        edgesList.append(formatEdge((cnNodeId, word2Id)))
+        edgesList.append(formatEdge((cnNodeId, paperRddId)))
+
+        edgesList.append(formatEdge((word1Id, cnNodeId)))
+        edgesList.append(formatEdge((word2Id, cnNodeId)))
+        edgesList.append(formatEdge((paperRddId, cnNodeId)))
     return edgesList
 
 
@@ -129,10 +157,27 @@ def main():
 /cleaned/test.tsv").cache()
 
     pair = words.map(seperateEachLine)
-    nodeList = pair.map(mapToEdge)
-    edges = nodeList.reduce(lambda x, y: x + y)
+    pair.persist()
+
+    # generate ID for each node
+    nodeIDs = pair.map(generateNodeID)
+    nodes = nodeIDs.reduce(lambda x, y: x + y)
+    nodesRDD = sc.parallelize(nodes, 1)
+    nodesRDD = nodesRDD.zipWithUniqueId()
+    nodesRDD.persist()
+
+    # save ID-Name mapping into file
+    formatNodeID = nodesRDD.map(lambda pair: "{id},{name}".format(id=pair[1], name=pair[0]))
+    formatNodeID.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/nodes")
+
+    # broadcast map relationship dictionary
+    V = sc.broadcast(nodesRDD.collectAsMap())
+
+    # create edge list
+    edgeList = pair.map(lambda item: mapToEdge(V, item))
+    edges = edgeList.reduce(lambda x, y: x + y)
     edgesRDD = sc.parallelize(edges, 1)
-    edgesRDD.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/edges")
+    edgesRDD.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/edges")
 
     # print edges
 
