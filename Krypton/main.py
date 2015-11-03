@@ -7,17 +7,9 @@ from pyspark import SparkConf, SparkContext
 import nltk
 import string
 
+
 conf = SparkConf().setMaster("local[*]").setAppName("Krypton")
-
-
-def seperateEachLine(line):
-    line = transferEncoding(line.strip())
-    (paperId, title, abstract) = line.split('\t')
-    content = title + ' ' + abstract
-    sentences = splitIntoSentences(content)
-    result = findCompoundNouns(sentences)
-
-    return (paperId, list(set(result)))
+sc = SparkContext(conf=conf)
 
 
 def transferEncoding(content):
@@ -67,8 +59,7 @@ def stemming(tagsPair):
 def getCNPair(tagsPair):
     nounsTypes = ['NN', 'NNS', 'NNP', 'NNPS']
     bigramPairs = nltk.bigrams(tagsPair)
-    return [(pair1[0], pair2[0]) for (pair1, pair2) in bigramPairs
-        if pair1[1] in nounsTypes and pair2[1] in nounsTypes]
+    return [(pair1[0], pair2[0]) for (pair1, pair2) in bigramPairs if pair1[1] in nounsTypes and pair2[1] in nounsTypes]
 
 
 def findCompoundNouns(sentences):
@@ -90,10 +81,57 @@ def findCompoundNouns(sentences):
     return CNList
 
 
-sc = SparkContext(conf=conf)
-words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data\
-    /cleaned/test_2.tsv").cache()
+def seperateEachLine(line):
+    line = transferEncoding(line.strip())
+    (paperId, title, abstract) = line.split('\t')
+    content = title + ' ' + abstract
+    sentences = splitIntoSentences(content)
+    result = findCompoundNouns(sentences)
 
-pair = words.map(seperateEachLine)
-nodeList = pair.reduceByKey(lambda x, y: x + y)
-nodeList.persist()
+    return (paperId, list(set(result)))
+
+
+def formatCNNode(cnNode):
+    word1 = cnNode[0]
+    word2 = cnNode[1]
+    return word1 + '|' + word2 if word1 < word2 else word2 + '|' + word1
+
+
+def formatEdge(edgePair):
+    n1 = edgePair[0]
+    n2 = edgePair[1]
+
+    return "{v1} {v2}".format(v1=n1, v2=n2)
+
+
+def mapToEdge(pair):
+    paperId = pair[0].strip()
+    cnNodes = pair[1]
+
+    edgesList = []
+    for cnNode in cnNodes:
+        word1 = cnNode[0].strip()
+        word2 = cnNode[1].strip()
+        fCNNode = formatCNNode(cnNode)
+        edgesList.append(formatEdge((fCNNode, word1)))
+        edgesList.append(formatEdge((fCNNode, word2)))
+        edgesList.append(formatEdge((fCNNode, paperId)))
+    return edgesList
+
+
+def main():
+
+    words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data\
+/cleaned/test.tsv").cache()
+
+    pair = words.map(seperateEachLine)
+    nodeList = pair.map(mapToEdge)
+    edges = nodeList.reduce(lambda x, y: x + y)
+    edgesRDD = sc.parallelize(edges, 1)
+    edgesRDD.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/edges")
+
+    # print edges
+
+
+if __name__ == '__main__':
+    main()
