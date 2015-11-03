@@ -5,25 +5,44 @@
 """
 Main entry for program
 """
-import click
 import time
 import itertools
 import sys
+import argparse
 from parsers.pubmedParser import MedlineParser
 from parsers.libs import xml
 from parsers.libs import cocurrency
 
-@click.command()
-@click.option('--parse', default="pubmed", help='Which dataset need to be parsed.')
-@click.option('--source', default="./test_data/pubmed/", help='source files.')
-@click.option('--output', default="./test_data/save/", help='Save files.')
-@click.option('--process', default=3, help='Num of cocurrency.')
-def cli(parse, source, output, process):
+def cli():
     '''
     Use respectly parser class to parse the dataset
     '''
-    if parse in ["pubmed", "medline"]:
-        medlineParser(source, output, process)
+
+    # parse command line arguments
+    parser = argparse.ArgumentParser(description="Krypton Service")
+
+    parser.add_argument("--source",
+                        required=True,
+                        metavar='AVALIABLE_ROOM',
+                        help="source directory")
+    parser.add_argument("--output",
+                        required=True,
+                        metavar='SCHEDULE_DATE',
+                        help="destination directory")
+    parser.add_argument("--process",
+                        required=False,
+                        default=3,
+                        metavar='CHECK_OUT_DATE',
+                        help="nounmber of processes")
+
+    # Try parse all args, if any args missed, the except will be caught, and
+    # print error message and print help information, finally exit program
+    try:
+        args=parser.parse_args()
+    except:
+        sys.exit(0)
+
+    medlineParser(args.source.strip(), args.output.strip(), args.process)
 
 
 def medlineProcess(url, saveDict):
