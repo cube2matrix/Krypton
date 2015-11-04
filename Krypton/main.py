@@ -9,7 +9,7 @@ import nltk
 import string
 
 
-conf = SparkConf().setMaster("local[*]").setAppName("Krypton")
+conf = SparkConf().setMaster("local[8]").setAppName("Krypton").set("spark.executor.memory", "2g").set("spark.python.worker.memory", "2g")
 sc = SparkContext(conf=conf)
 
 
