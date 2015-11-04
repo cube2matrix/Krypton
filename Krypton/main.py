@@ -4,14 +4,15 @@
 # encoding=utf8
 
 from pyspark import SparkConf, SparkContext
-from functools import partial
 import nltk
 import string
 
 
-conf = SparkConf().setMaster("local[8]").setAppName("Krypton").set("spark.executor.memory", "2g").set("spark.python.worker.memory", "2g")
+conf = SparkConf().setAppName("Krypton")
 sc = SparkContext(conf=conf)
 
+nltk.download("punkt")
+nltk.download("maxent_treebank_pos_tagger")
 
 def transferEncoding(content):
     return content.encode('utf-8')
@@ -86,10 +87,17 @@ def seperateEachLine(line):
     line = line.strip()
     (paperId, title, abstract) = line.split('\t')
     content = title + ' ' + abstract
-    sentences = splitIntoSentences(content)
-    result = findCompoundNouns(sentences)
 
-    return (paperId, list(set(result)))
+    return (paperId, content)
+
+
+def extractCN(pair):
+    content = pair[1]
+    paperId = pair[0]
+    sentences = splitIntoSentences(content)
+    cns = findCompoundNouns(sentences)
+
+    return (paperId, list(set(cns)))
 
 
 def generateNodeID(pair):
@@ -153,9 +161,11 @@ def mapToEdge(mapBrdCstDict, pair):
 
 def main():
 
-    words = sc.textFile("/Volumes/extend1/amazon/data/pubmed/603/merge/merged.tsv").cache()
+    words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data/cleaned/test.tsv").cache()
 
-    pair = words.map(seperateEachLine)
+    records = words.map(seperateEachLine)
+    pair = records.map(extractCN)
+
     pair.persist()
 
     # generate ID for each node
@@ -163,7 +173,6 @@ def main():
     nodes = nodeIDs.reduce(lambda x, y: x + y)
     nodesRDD = sc.parallelize(nodes, 1)
     nodesRDD = nodesRDD.zipWithUniqueId()
-    nodesRDD.persist()
 
     # save ID-Name mapping into file
     formatNodeID = nodesRDD.map(lambda pair: "{id},{name}".format(id=pair[1], name=pair[0]))
@@ -176,9 +185,7 @@ def main():
     edgeList = pair.map(lambda item: mapToEdge(V, item))
     edges = edgeList.reduce(lambda x, y: x + y)
     edgesRDD = sc.parallelize(edges, 1)
-    edgesRDD.saveAsTextFile("/Volumes/extend1/amazon/data/pubmed/603/merge/edges")
-
-    # print edges
+    edgesRDD.saveAsTextFile("/Volumes/extend1/amazon/data/pubmed/603/edges")
 
 
 if __name__ == '__main__':
