@@ -3,15 +3,18 @@
 ### Make sure that nodes are exclusive for you
 ### ntasks-per-node is irrelevant
 #SBATCH --exclusive
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=8
 
 ### Customize this section for your job
-#SBATCH --nodes=8
-#SBATCH --time=10:00:00
+#SBATCH --nodes=4
+#SBATCH --time=1:00:00
 
+#SBATCH --partition=debug
 #SBATCH --job-name="Krypton_darrenxyli_xli66"
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
+#SBATCH --mail-user=xli66@buffalo.edu
+#SBATCH --mail-type=ALL
 
 # MAKE SURE THAT SPARK_LOG_DIR AND SPARK_WORKER_DIR
 # ARE SET IN YOUR BASHRC, FOR EXAMPLE:
