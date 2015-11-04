@@ -9,7 +9,7 @@ MedlineParser provide the parser class to parse medline data and pubmed
 from libs import utils
 from libs import saxypy
 from collections import OrderedDict
-from libs import tablib
+import tablib
 import os
 import codecs
 
