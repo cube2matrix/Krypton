@@ -400,55 +400,55 @@ class MedlineParser(object):
         PMID = self.parsePMID(article)
 
         # DateCreated
-        DateCreated = self.parseDateCreated(article)
+        # DateCreated = self.parseDateCreated(article)
 
         # DateCompleted
-        DateCompleted = self.parseDateCompleted(article)
+        # DateCompleted = self.parseDateCompleted(article)
 
         # DateRevised
-        DateRevised = self.parseDateRevised(article)
+        # DateRevised = self.parseDateRevised(article)
 
         # Journal Infomation
-        JournalInfo = self.parseJournalInfo(article)
-        Journal = JournalInfo['Journal']
-        ISSN = JournalInfo['ISSN']
-        Volume = JournalInfo['Volume']
-        Issue = JournalInfo['Issue']
-        PubDate = JournalInfo['PubDate']
-        ISOAbbreviation = JournalInfo['ISOAbbreviation']
+        # JournalInfo = self.parseJournalInfo(article)
+        # Journal = JournalInfo['Journal']
+        # ISSN = JournalInfo['ISSN']
+        # Volume = JournalInfo['Volume']
+        # Issue = JournalInfo['Issue']
+        # PubDate = JournalInfo['PubDate']
+        # ISOAbbreviation = JournalInfo['ISOAbbreviation']
 
         # ArticleTitle
         ArticleTitle = self.parseArticleTitle(article)
 
         # ELocationID
-        ELocationID = self.parseElocationId(article)
+        # ELocationID = self.parseElocationId(article)
 
         # NlmUniqueID
-        NlmUniqueID = self.parseNlmId(article)
+        # NlmUniqueID = self.parseNlmId(article)
 
         # Country
-        Country = self.parseCountry(article)
+        # Country = self.parseCountry(article)
 
         # Abstract/AbstractText
         Abstract = self.parseAbstract(article)
 
         # Authors
-        Authors = self.parseAuthor(article)
+        # Authors = self.parseAuthor(article)
 
         # Language
-        Language = self.parseLanguage(article)
+        # Language = self.parseLanguage(article)
 
         # GrantList
-        Grants = self.parseGrants(article)
+        # Grants = self.parseGrants(article)
 
         # PublicationTypeList
-        PublicationTypes = self.parsePubType(article)
+        # PublicationTypes = self.parsePubType(article)
 
         # MeshHeadingList
-        MeshHeadings = self.parseMeshHeading(article)
+        # MeshHeadings = self.parseMeshHeading(article)
 
         # KeywordList
-        Keywords = self.parseKeywords(article)
+        # Keywords = self.parseKeywords(article)
 
         # Final Parse Result
         result = OrderedDict()
@@ -459,7 +459,7 @@ class MedlineParser(object):
         # result['Grants'] = Grants
         # result['PublicationTypes'] = '|'.join(PublicationTypes).strip('\\').replace('\t', '')
         # result['MeshHeadings'] = '|'.join(MeshHeadings).strip('\\').replace('\t', '')
-        result['Keywords'] = '|'.join(Keywords).strip('\\').replace('\t', '')
+        # result['Keywords'] = '|'.join(Keywords).strip('\\').replace('\t', '')
         # result['ELocationID'] = ELocationID.replace('\\', '')
         # result['ISOAbbreviation'] = ISOAbbreviation
         # result['Language'] = Language
