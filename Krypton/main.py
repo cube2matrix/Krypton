@@ -153,8 +153,7 @@ def mapToEdge(mapBrdCstDict, pair):
 
 def main():
 
-    words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data\
-/cleaned/test.tsv").cache()
+    words = sc.textFile("/gpfs/user/xli66/603/merge/merged.tsv").cache()
 
     pair = words.map(seperateEachLine)
     pair.persist()
@@ -168,7 +167,7 @@ def main():
 
     # save ID-Name mapping into file
     formatNodeID = nodesRDD.map(lambda pair: "{id},{name}".format(id=pair[1], name=pair[0]))
-    formatNodeID.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/nodes")
+    formatNodeID.saveAsTextFile("/gpfs/user/xli66/603/nodes")
 
     # broadcast map relationship dictionary
     V = sc.broadcast(nodesRDD.collectAsMap())
@@ -177,7 +176,7 @@ def main():
     edgeList = pair.map(lambda item: mapToEdge(V, item))
     edges = edgeList.reduce(lambda x, y: x + y)
     edgesRDD = sc.parallelize(edges, 1)
-    edgesRDD.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/edges")
+    edgesRDD.saveAsTextFile("/gpfs/user/xli66/603/edges")
 
     # print edges
 
