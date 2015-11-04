@@ -42,7 +42,7 @@ def removeSmallWord(tagsPair):
 
 
 def toLowerCase(tagsPair):
-    return [(transferEncoding(word.lower()), tag) for (word, tag) in tagsPair]
+    return [(word.lower(), tag) for (word, tag) in tagsPair]
 
 
 def removeStopWord(tagsPair):
@@ -68,8 +68,8 @@ def findCompoundNouns(sentences):
     CNList = []
 
     for sentence in sentences:
-        utf8EncodingSentence = transferEncoding(sentence)
-        words = tokenizer(utf8EncodingSentence)
+        # utf8EncodingSentence = transferEncoding(sentence)
+        words = tokenizer(sentence)
         pairs = posTagging(words)
         pairs = removePunctuation(pairs)
         pairs = removeSmallWord(pairs)
@@ -83,7 +83,7 @@ def findCompoundNouns(sentences):
 
 
 def seperateEachLine(line):
-    line = transferEncoding(line.strip())
+    line = line.strip()
     (paperId, title, abstract) = line.split('\t')
     content = title + ' ' + abstract
     sentences = splitIntoSentences(content)
@@ -102,9 +102,9 @@ def generateNodeID(pair):
         word1 = cnNode[0].strip()
         word2 = cnNode[1].strip()
         fCNNode = formatCNNode(cnNode)
-        nodes.append(transferEncoding(word1))
-        nodes.append(transferEncoding(word2))
-        nodes.append(transferEncoding(fCNNode))
+        nodes.append(word1)
+        nodes.append(word2)
+        nodes.append(fCNNode)
     return list(set(nodes))
 
 
@@ -153,8 +153,7 @@ def mapToEdge(mapBrdCstDict, pair):
 
 def main():
 
-    words = sc.textFile("/Users/darrenxyli/Documents/Krypton/test/data\
-/cleaned/test.tsv").cache()
+    words = sc.textFile("/Volumes/extend1/amazon/data/pubmed/603/merge/merged.tsv").cache()
 
     pair = words.map(seperateEachLine)
     pair.persist()
@@ -168,7 +167,7 @@ def main():
 
     # save ID-Name mapping into file
     formatNodeID = nodesRDD.map(lambda pair: "{id},{name}".format(id=pair[1], name=pair[0]))
-    formatNodeID.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/nodes")
+    formatNodeID.saveAsTextFile("/Volumes/extend1/amazon/data/pubmed/603/nodes")
 
     # broadcast map relationship dictionary
     V = sc.broadcast(nodesRDD.collectAsMap())
@@ -177,7 +176,7 @@ def main():
     edgeList = pair.map(lambda item: mapToEdge(V, item))
     edges = edgeList.reduce(lambda x, y: x + y)
     edgesRDD = sc.parallelize(edges, 1)
-    edgesRDD.saveAsTextFile("/Users/darrenxyli/Documents/Krypton/test/data/edges")
+    edgesRDD.saveAsTextFile("/Volumes/extend1/amazon/data/pubmed/603/merge/edges")
 
     # print edges
 

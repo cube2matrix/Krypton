@@ -118,7 +118,7 @@ class MedlineParser(object):
         try:
             PMID = article[u'PMID'][u'*content*']
         except:
-            PMID = ''
+            PMID = '-1'
         return PMID
 
     def parseDateCreated(self, article):
@@ -216,7 +216,7 @@ class MedlineParser(object):
         try:
             ArticleTitle = article[u'Article'][u'ArticleTitle']
         except:
-            ArticleTitle = ''
+            ArticleTitle = 'the'
         return ArticleTitle.replace("\\", '')
 
 
@@ -251,9 +251,9 @@ class MedlineParser(object):
             try:
                 Abstract = article[u'Article'][u'Abstract']
             except:
-                Abstract = ''
+                Abstract = 'the'
 
-        finalAbstract = ''
+        finalAbstract = 'the'
 
         if isinstance(Abstract, list):
             for item in Abstract:
@@ -452,9 +452,9 @@ class MedlineParser(object):
 
         # Final Parse Result
         result = OrderedDict()
-        result['PMID'] = PMID
-        result['ArticleTitle'] = ArticleTitle.strip('\\')
-        result['Abstract'] = Abstract
+        result['PMID'] = PMID.decode("utf-8", "replace")
+        result['ArticleTitle'] = ArticleTitle.strip('\\').decode("utf-8", "replace")
+        result['Abstract'] = Abstract.decode("utf-8", "replace")
         # result['Authors'] = Authors
         # result['Grants'] = Grants
         # result['PublicationTypes'] = '|'.join(PublicationTypes).strip('\\').replace('\t', '')
