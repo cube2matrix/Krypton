@@ -42,7 +42,7 @@ def removeSmallWord(tagsPair):
 
 
 def toLowerCase(tagsPair):
-    return [(transferEncoding(word.lower()), tag) for (word, tag) in tagsPair]
+    return [(word.lower(), tag) for (word, tag) in tagsPair]
 
 
 def removeStopWord(tagsPair):
@@ -68,8 +68,8 @@ def findCompoundNouns(sentences):
     CNList = []
 
     for sentence in sentences:
-        utf8EncodingSentence = transferEncoding(sentence)
-        words = tokenizer(utf8EncodingSentence)
+        # utf8EncodingSentence = transferEncoding(sentence)
+        words = tokenizer(sentence)
         pairs = posTagging(words)
         pairs = removePunctuation(pairs)
         pairs = removeSmallWord(pairs)
@@ -83,7 +83,7 @@ def findCompoundNouns(sentences):
 
 
 def seperateEachLine(line):
-    line = transferEncoding(line.strip())
+    line = line.strip()
     (paperId, title, abstract) = line.split('\t')
     content = title + ' ' + abstract
     sentences = splitIntoSentences(content)
@@ -102,9 +102,9 @@ def generateNodeID(pair):
         word1 = cnNode[0].strip()
         word2 = cnNode[1].strip()
         fCNNode = formatCNNode(cnNode)
-        nodes.append(transferEncoding(word1))
-        nodes.append(transferEncoding(word2))
-        nodes.append(transferEncoding(fCNNode))
+        nodes.append(word1)
+        nodes.append(word2)
+        nodes.append(fCNNode)
     return list(set(nodes))
 
 
