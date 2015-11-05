@@ -61,7 +61,7 @@ test/data/
 
 # Project Files
 */archive/
-
+*/.idea/
 __MACOSX
 .DS_Store
 
