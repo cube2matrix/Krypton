@@ -9,8 +9,18 @@ Massive parallelism computation by Spark.
 
 ### Compound Nouns Graph
 
-* Logic View
-* Physic View
+#### Logic View
+![logicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/graph_logic_view.png)
+
+`P` means paper node, `CN` is compound nouns node, `N` is noun node.
+
+	class Node {
+		long id,
+		Object attr
+	}
+		
+
+#### Physic View
 
 ### Betweenness Centrality
 **Betweenness centrality** is an indicator of a node's centrality in a network. It is equal to the number of shortest paths from all vertices to all others that pass through that node. A node with high betweenness centrality has a large influence on the transfer of items through the network, under the assumption that item transfer follows the shortest paths.
@@ -22,7 +32,7 @@ where <math><msubsup><mi>&sigma;</mi> <mi>s,t</mi> <mi></mi></msubsup></math> is
 
 
 ### Shortest Path Search
-Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to find shortest pathes, but in paralle situation, the former 2 algorithm is not easy to implement. But we can use BFS in paralle which maps process on each node to find all shortest pathes.
+Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to find shortest pathes, but in paralle situation, the former 2 algorithm is not easy to implement. But we can use parallel Breadth-First Search which maps process on each node to find all shortest pathes.
 
 The idea of algorithm we implemented is from [Ulrik Brandes](http://www.inf.uni-konstanz.de/algo/publications/b-vspbc-08.pdf)
 
