@@ -10,7 +10,7 @@ Massive parallelism computation by Spark.
 ### Compound Nouns Graph
 
 #### Logic View
-![logicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/graph_logic_view.png)
+![logicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/graph_logic_view.png)
 
 `P` means paper node, `CN` is compound nouns node, `N` is noun node.
 
@@ -21,6 +21,9 @@ Massive parallelism computation by Spark.
 		
 
 #### Physic View
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/graph_physic_view.png)
+
+The vertices are partitioned by id. Within each vertex partition, the routing table stores for each edge partition the set of vertices present. Vertex 6 and adjacent edges (shown with dotted lines) have been restricted from the graph, so they are removed from the edges and the routing table. Vertex 6 remains in the vertex partitions, but it is hidden by the bitmask.
 
 ### Betweenness Centrality
 **Betweenness centrality** is an indicator of a node's centrality in a network. It is equal to the number of shortest paths from all vertices to all others that pass through that node. A node with high betweenness centrality has a large influence on the transfer of items through the network, under the assumption that item transfer follows the shortest paths.
@@ -34,11 +37,28 @@ where <math><msubsup><mi>&sigma;</mi> <mi>s,t</mi> <mi></mi></msubsup></math> is
 ### Shortest Path Search
 Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to find shortest pathes, but in paralle situation, the former 2 algorithm is not easy to implement. But we can use parallel Breadth-First Search which maps process on each node to find all shortest pathes.
 
+	class MAPPER
+		method Map(VertexId id, Node N)
+			d <- N.Distance
+			EMIT(id, [])
+			for n in N.Neiborhood do
+				EMIT(id, list+n)
+	
+	class REDUCER
+		method Reduce(VertexId id, Array[] list)
+			for path in list
+				if shortest(path)
+					result <- path
+			EMIT(id, result)
+
 The idea of algorithm we implemented is from [Ulrik Brandes](http://www.inf.uni-konstanz.de/algo/publications/b-vspbc-08.pdf)
 
 ## EXPERIMENTS
 
 ### Environment and Datasets
+
+We test the program on CCR HPC in Buffalo, with computation resources range from 1 to 32. The datesets is from [PubMed](http://www.ncbi.nlm.nih.gov/pubmed), we picked 20GB plain file to test.
+
 ### Performance Summary
 
 ## CONCLUSION
