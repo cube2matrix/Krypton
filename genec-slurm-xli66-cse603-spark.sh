@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ####### DO NOT EDIT THIS SECTION
-#SBATCH --partition=general-c
+#######SBATCH --partition=general-c
 #SBATCH --exclusive
 
 ####### CUSTOMIZE THIS SECTION FOR YOUR JOB
