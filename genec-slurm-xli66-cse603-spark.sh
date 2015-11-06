@@ -31,7 +31,7 @@ mkdir -p $SPARK_LOG_DIR $SPARK_WORKER_DIR
 module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
-PROG="/gpfs/user/xli66/Krypton/Krypton/main.py"
+PROG="/gpfs/user/xli66/Krypton/graph_generator/main.py"
 ARGS="32"
 
 
