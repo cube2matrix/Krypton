@@ -171,7 +171,7 @@ def main():
     # generate ID for each node
     nodeIDs = pair.map(generateNodeID)
     nodes = nodeIDs.reduce(lambda x, y: x + y)
-    nodesRDD = sc.parallelize(nodes, 1)
+    nodesRDD = sc.parallelize(nodes)
     nodesRDD = nodesRDD.zipWithUniqueId()
 
     # save ID-Name mapping into file
@@ -184,7 +184,7 @@ def main():
     # create edge list
     edgeList = pair.map(lambda item: mapToEdge(V, item))
     edges = edgeList.reduce(lambda x, y: x + y)
-    edgesRDD = sc.parallelize(edges, 1)
+    edgesRDD = sc.parallelize(edges)
     edgesRDD.saveAsTextFile("/user/xli66/603/edges")
 
 

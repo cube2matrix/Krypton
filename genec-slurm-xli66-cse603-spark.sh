@@ -8,7 +8,7 @@
 ####### KEEP --mem=64000 TO USE FULL MEMORY
 #SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
-#SBATCH --nodes=16
+#SBATCH --nodes=8
 #SBATCH --ntasks-per-node=8
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --executor-cores $executor_cores --py-files //gpfs//scratch//xli66//nltk.zip --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --executor-cores $executor_cores --py-files //gpfs//scratch//xli66//nltk.zip --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
