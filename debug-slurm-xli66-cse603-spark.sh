@@ -8,7 +8,7 @@
 ####### KEEP --mem=64000 TO USE FULL MEMORY
 #######SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
-#SBATCH --nodes=2
+#SBATCH --nodes=3
 #SBATCH --ntasks-per-node=8
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
@@ -53,11 +53,11 @@ MASTER="spark://${NODES[0]}:7077"
 # ALL OTHER NODES ARE WORKERS
 mkdir -p $SLURM_SUBMIT_DIR/$SLURM_JOB_ID
 for i in `seq 0 $LAST`; do
-  ssh ${NODES[$i]} "cd $SPARK_HOME; module load python/anaconda; nohup ./bin/spark-class org.apache.spark.deploy.worker.Worker $MASTER &> $SLURM_SUBMIT_DIR/$SLURM_JOB_ID/nohup-${NODES[$i]}.$i.out" &
+  ssh ${NODES[$i]} "cd $SPARK_HOME; nohup ./bin/spark-class org.apache.spark.deploy.worker.Worker $MASTER &> $SLURM_SUBMIT_DIR/$SLURM_JOB_ID/nohup-${NODES[$i]}.$i.out" &
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --executor-cores $executor_cores --py-files //gpfs//scratch//xli66//nltk.zip --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --driver-memory 4g --executor-memory 8g --executor-cores $executor_cores --py-files //gpfs//scratch//xli66//nltk.zip --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
