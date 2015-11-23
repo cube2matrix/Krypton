@@ -171,7 +171,7 @@ def main():
     # generate ID for each node
     nodeIDs = pair.map(generateNodeID)
     nodes = nodeIDs.reduce(lambda x, y: x + y)
-    nodesRDD = sc.parallelize(nodes)
+    nodesRDD = sc.parallelize(nodes, 1)
     nodesRDD = nodesRDD.zipWithUniqueId()
 
     # save ID-Name mapping into file
