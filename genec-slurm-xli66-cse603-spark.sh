@@ -8,7 +8,7 @@
 ####### KEEP --mem=64000 TO USE FULL MEMORY
 #SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
-#SBATCH --nodes=8
+#SBATCH --nodes=32
 #SBATCH --ntasks-per-node=8
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
