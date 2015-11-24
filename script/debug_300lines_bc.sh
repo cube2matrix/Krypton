@@ -31,7 +31,7 @@ mkdir -p $SPARK_LOG_DIR $SPARK_WORKER_DIR
 module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
-PROG="/gpfs/user/xli66/Krypton/betweeness/1000_brandes_bc.py"
+PROG="/gpfs/user/xli66/Krypton/betweeness/19800_brandes_bc.py"
 ARGS="32"
 
 
