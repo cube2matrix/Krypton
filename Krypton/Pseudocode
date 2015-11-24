@@ -1,0 +1,43 @@
+for all v ∈ V in parallel do
+	BC[v] ← 0
+
+for all s ∈ V do
+
+	I. Initialization
+	for all t ∈ V in parallel do
+		Succ[t] ← empty multiset, σ[t] ← 0, d[t] ← −1
+	σ[s]←1, d[s]←0
+	phase ← 0, S[phase] ← empty stack push s → S[phase]
+	count ← 1
+
+	II. Graph traversal
+	while count > 0 do
+		count ← 0
+
+		for all v ∈ S[phase] in parallel do
+			for each neighbor w of v in parallel do
+				dw ← compare and swap(&d[w], −1, phase + 1)
+				if dw = −1 then
+					p ← fetch and add(&count, 1)
+					Insert w at position p of S[phase + 1]
+					dw ← phase + 1
+				if dw = phase + 1 then
+					p ← fetch and add(&Succ count[v], 1)
+					Insert w at position p of Succ[v]
+					fetch and add(&sigma[w],sigma[v])
+
+		phase ← phase + 1
+	phase ← phase − 1
+
+	III. Dependency accumulation
+	δ[t] ← 0 ∀ t ∈ V
+	phase ← phase − 1
+	for all w ∈ S[phase] in parallel do
+		dsw ← 0
+		sw ← σ[w]
+		for all v ∈ Succ[w] do
+			dsw ← dsw+ sw/σ[w] * (1+δ[v])
+		δ[w] ← dsw
+		BC[w] ← BC[w] + dsw
+
+
