@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ####### DO NOT EDIT THIS SECTION
-#SBATCH --partition=debug
+#######SBATCH --partition=general-c
 #SBATCH --exclusive
 
 ####### CUSTOMIZE THIS SECTION FOR YOUR JOB
 ####### KEEP --mem=64000 TO USE FULL MEMORY
-#######SBATCH --mem=64000
+#SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
-#SBATCH --nodes=2
+#SBATCH --nodes=32
 #SBATCH --ntasks-per-node=8
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
@@ -31,7 +31,7 @@ mkdir -p $SPARK_LOG_DIR $SPARK_WORKER_DIR
 module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
-PROG="/gpfs/user/xli66/Krypton/betweeness/3582_brandes_bc.py"
+PROG="/gpfs/user/xli66/Krypton/betweeness/19800_brandes_bc.py"
 ARGS="32"
 
 
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --executor-cores $executor_cores --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --driver-memory 4g --executor-memory 8g --executor-cores $executor_cores --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
