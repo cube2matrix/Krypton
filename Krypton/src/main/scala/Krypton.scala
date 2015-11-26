@@ -5,8 +5,8 @@ import scala.compat.Platform.currentTime
 
 object Krypton {
     def main(args: Array[String]) {
-        // val logFile = "/gpfs/courses/cse603/students/xli66/603/graph/17lines/edges/part-00000"
-        val logFile = "/Users/darrenxyli/Documents/3904lines/edges/part-00000"
+        val logFile = "/gpfs/courses/cse603/students/xli66/603/graph/1515lines/edges/part-00000"
+        // val logFile = "/Users/darrenxyli/Documents/3904lines/edges/part-00000"
         val conf = new SparkConf().setAppName("Krypton")
         val sc = new SparkContext(conf)
         val graph = GraphLoader.edgeListFile(sc, logFile).cache()
