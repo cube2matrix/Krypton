@@ -1,50 +1,68 @@
 package com.darrenxyli.krypton.libs
 
-import com.darrenxyli.krypton.libs.BetweennessCentrality.BCMap
-import org.apache.spark.graphx
 import org.apache.spark.graphx._
 import scala.reflect.ClassTag
 
+
 object BaderBC {
-  /** Stores a map from the vertex id of a landmark to the distance to that landmark. */
-  type SPMap = Map[VertexId, Int]
+    /** Stores a map from the vertex id of a landmark to the distance to that landmark. */
 
-  private def makeMap(x: (VertexId, Int)*) = Map(x: _*)
+    // Message (sourceId, g[src], d[src])
+    // Attr (Set, g[cur], d[cur])
 
-  private def incrementMap(spmap: SPMap): SPMap = spmap.map { case (v, d) => v -> (d + 1) }
+    type Attribution = (Set[VertexId], Int, Int)
+    type Message = (VertexId, Int, Int)
 
-  private def addMaps(spmap1: SPMap, spmap2: SPMap): SPMap =
-    (spmap1.keySet ++ spmap2.keySet).map {
-      k => k -> math.min(spmap1.getOrElse(k, Int.MaxValue), spmap2.getOrElse(k, Int.MaxValue))
-    }.toMap
+    /**
+    * Computes shortest paths to the given set of landmark vertices.
+    *
+    * @tparam ED the edge attribute type (not used in the computation)
+    *
+    * @param graph the graph for which to compute the shortest paths
+    * @param landmarks the list of landmark vertex ids. Shortest paths will be computed to each
+    * landmark.
+    *
+    * @return a graph where each vertex attribute is a map containing the shortest-path distance to
+    * each reachable landmark vertex.
+    */
+    def run[VD, ED: ClassTag](graph: Graph[VD, ED], landmarks: VertexId): Graph[Attribution, ED] = {
+        val initialGraph = graph.mapVertices { (vid, attr) =>
+            if (landmarks == vid) (Set[VertexId](), 1, 0) else (Set[VertexId](), 0, -1)
+        }
 
-  /**
-   * Computes shortest paths to the given set of landmark vertices.
-   *
-   * @tparam ED the edge attribute type (not used in the computation)
-   *
-   * @param graph the graph for which to compute the shortest paths
-   * @param landmarks the list of landmark vertex ids. Shortest paths will be computed to each
-   * landmark.
-   *
-   * @return a graph where each vertex attribute is a map containing the shortest-path distance to
-   * each reachable landmark vertex.
-   */
-  def run[VD, ED: ClassTag](graph: Graph[VD, ED]): Graph[SPMap, ED] = {
-    val spGraph = graph.mapVertices { (vid, attr) => makeMap(vid -> 0) }
+        val initialMessage = (-1.toLong, 0, -2)
 
-    val initialMessage = makeMap()
+        def vertexProgram(id: VertexId,
+                          attr: Attribution,
+                          msg: Message): Attribution = {
+            val (pre, gLocal, dLocal) = attr
+            val (srcId, gSrc, dSrc) = msg
 
-    def vertexProgram(id: VertexId, attr: SPMap, msg: SPMap): SPMap = {
-      addMaps(attr, msg)
+            var newDLocal = dLocal
+            var newGLocal = gLocal
+            var newPre = pre
+
+            if (srcId != -1.toLong) {
+                if (newDLocal == -1) newDLocal = dSrc + 1
+                if (newDLocal == dSrc + 1) {
+                    newPre += srcId
+                    newGLocal += gSrc
+                }
+            }
+            (newPre, newGLocal, newDLocal)
+        }
+
+        def sendMessage(edge: EdgeTriplet[Attribution, _]): Iterator[(VertexId, Message)] = {
+
+            if (edge.dstAttr._1.contains(edge.srcId)) Iterator.empty
+            else Iterator((edge.dstId, (edge.srcId, edge.srcAttr._2, edge.srcAttr._3)))
+
+        }
+
+        def mergeMessage(msg1: Message, msg2: Message): Message = {
+            if (msg1._3 < msg2._3) msg1 else msg2
+        }
+
+        Pregel(initialGraph, initialMessage)(vertexProgram, sendMessage, mergeMessage)
     }
-
-    def sendMessage(edge: EdgeTriplet[SPMap, _]): Iterator[(VertexId, SPMap)] = {
-      val newAttr = incrementMap(edge.dstAttr)
-      if (edge.srcAttr != addMaps(newAttr, edge.srcAttr)) Iterator((edge.srcId, newAttr))
-      else Iterator.empty
-    }
-
-    Pregel(spGraph, initialMessage)(vertexProgram, sendMessage, addMaps)
-  }
 }
