@@ -22,7 +22,7 @@ import scala.reflect._
  * It uses quadratic probing with a power-of-2 hash table size, which is guaranteed
  * to explore all spaces for each key (see http://en.wikipedia.org/wiki/Quadratic_probing).
  */
-class HyperXOpenHashSet[@specialized(Long, Int) T: ClassTag](
+class OpenHashSet[@specialized(Long, Int) T: ClassTag](
                                                                 initialCapacity: Int,
                                                                 loadFactor: Double)
     extends Serializable {
@@ -32,7 +32,7 @@ class HyperXOpenHashSet[@specialized(Long, Int) T: ClassTag](
     require(loadFactor < 1.0, "Load factor must be less than 1.0")
     require(loadFactor > 0.0, "Load factor must be greater than 0.0")
 
-    import com.darrenxyli.krypton.libs.HyperXOpenHashSet._
+    import com.darrenxyli.krypton.libs.OpenHashSet._
 
     def this(initialCapacity: Int) = this(initialCapacity, 0.7)
 
@@ -255,7 +255,7 @@ class HyperXOpenHashSet[@specialized(Long, Int) T: ClassTag](
     }
 }
 
-object HyperXOpenHashSet {
+object OpenHashSet {
 
     val INVALID_POS = -1
     val NONEXISTENCE_MASK = 0x80000000

@@ -5,7 +5,7 @@ import scala.reflect.ClassTag
 /**
  * An append-only, non-threadsafe, array-backed vector that is optimized for primitive types.
  */
-class HyperXPrimitiveVector[@specialized(Long, Int, Double) V: ClassTag](initialSize: Int = 64) extends Serializable {
+class Vector[@specialized(Long, Int, Double) V: ClassTag](initialSize: Int = 64) extends Serializable {
     private var _numElements = 0
     private var _array: Array[V] = _
 
@@ -49,10 +49,10 @@ class HyperXPrimitiveVector[@specialized(Long, Int, Double) V: ClassTag](initial
     def array: Array[V] = _array
 
     /** Trims this vector so that the capacity is equal to the size. */
-    def trim(): HyperXPrimitiveVector[V] = resize(size)
+    def trim(): Vector[V] = resize(size)
 
     /** Resizes the array, dropping elements if the total length decreases. */
-    def resize(newLength: Int): HyperXPrimitiveVector[V] = {
+    def resize(newLength: Int): Vector[V] = {
         val newArray = new Array[V](newLength)
         _array.copyToArray(newArray)
         _array = newArray

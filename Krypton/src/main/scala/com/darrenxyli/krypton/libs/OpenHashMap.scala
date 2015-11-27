@@ -22,8 +22,8 @@ import scala.reflect._
  * new key set and the value is assigned.
  *
  */
-class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
-@specialized(Long, Int, Double) V: ClassTag](val keySet:HyperXOpenHashSet[K],
+class OpenHashMap[@specialized(Long, Int) K: ClassTag,
+@specialized(Long, Int, Double) V: ClassTag](val keySet:OpenHashSet[K],
                                              var _values: Array[V])
     extends Iterable[(K, V)]
     with Serializable {
@@ -49,13 +49,13 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
      * Allocate an OpenHashMap with a fixed initial capacity
      */
     def this(initialCapacity: Int) =
-        this(new HyperXOpenHashSet[K](initialCapacity),
+        this(new OpenHashSet[K](initialCapacity),
             new Array[V](initialCapacity))
 
     /**
      * Allocate an OpenHashMap with a fixed initial capacity
      */
-    def this(keySet: HyperXOpenHashSet[K]) = this(keySet,
+    def this(keySet: OpenHashSet[K]) = this(keySet,
         new Array[V](keySet.capacity))
 
     override def size = keySet.size
@@ -99,8 +99,8 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
         keySet.addWithoutResize(k)
         keySet.rehashIfNeeded(k, grow, move)
         val pos = keySet.getPos(k)
-        val ind = pos & HyperXOpenHashSet.POSITION_MASK
-        if ((pos & HyperXOpenHashSet.NONEXISTENCE_MASK) != 0) {
+        val ind = pos & OpenHashSet.POSITION_MASK
+        if ((pos & OpenHashSet.NONEXISTENCE_MASK) != 0) {
             // if first add
             _values(ind) = v
         } else {
@@ -131,8 +131,8 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
         }
     }
 
-    def ++(other: HyperXOpenHashMap[K, V]): HyperXOpenHashMap[K, V] = {
-        val merged = new HyperXOpenHashMap[K, V]()
+    def ++(other: OpenHashMap[K, V]): OpenHashMap[K, V] = {
+        val merged = new OpenHashMap[K, V]()
         val it: Iterator[(K, V)] = this.iterator ++ other.iterator
         while (it.hasNext) {
             val cur = it.next()
@@ -191,8 +191,8 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
     }
 
     def toArrays: (Array[K], Array[V]) = {
-        val keyAry = new HyperXPrimitiveVector[K]()
-        val valAry = new HyperXPrimitiveVector[V]()
+        val keyAry = new Vector[K]()
+        val valAry = new Vector[V]()
         iterator.foreach{pair=>
             keyAry += pair._1
             valAry += pair._2
@@ -200,14 +200,14 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
         (keyAry.trim().array, valAry.trim().array)
     }
 
-    def mapOn(f: (V) => V): HyperXOpenHashMap[K, V] = {
+    def mapOn(f: (V) => V): OpenHashMap[K, V] = {
         this.iterator.foreach{pair=>
             this.update(pair._1, f(pair._2))
         }
         this
     }
 
-    def mapOn(f: (K, V) => V): HyperXOpenHashMap[K, V] = {
+    def mapOn(f: (K, V) => V): OpenHashMap[K, V] = {
         this.iterator.foreach{pair=>
             this.update(pair._1, f(pair._1, pair._2))
         }
@@ -215,9 +215,9 @@ class HyperXOpenHashMap[@specialized(Long, Int) K: ClassTag,
     }
 }
 
-object HyperXOpenHashMap {
-    def apply[K: ClassTag, V: ClassTag](iter: Iterator[(K, V)]): HyperXOpenHashMap[K, V] = {
-        val map = new HyperXOpenHashMap[K, V]()
+object OpenHashMap {
+    def apply[K: ClassTag, V: ClassTag](iter: Iterator[(K, V)]): OpenHashMap[K, V] = {
+        val map = new OpenHashMap[K, V]()
         iter.foreach(pair => map.update(pair._1, pair._2))
         map
     }

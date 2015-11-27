@@ -1,7 +1,7 @@
 package com.darrenxyli.krypton.libs
 
 import org.apache.spark.Logging
-import org.apache.spark.graphx.VertexId
+import org.apache.spark.graphx._
 import org.apache.spark.hyperx.{HyperPregel, HyperedgeTuple, Hypergraph}
 import org.apache.spark.rdd.RDD
 
@@ -9,10 +9,10 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
- * Compute the betweenness centrality for every vertex in the hypergraph
+ * Compute the betweenness centrality for every vertex in the graph
  *
  * The betweenness centrality is defined on a vertex as the fraction of shortest
- * paths between specified two vertices in the hypergraph that passes this
+ * paths between specified two vertices in the graph that passes this
  * vertex
  *
  * The implementation employs a breadth first search first to get the shortest
@@ -22,23 +22,24 @@ import scala.reflect.ClassTag
 object BaderBetweennessCentrality extends Logging {
 
     // sourceId -> (dst, value, precedence[count])
-    type BCMap = Map[VertexId, (Int, Int, HyperXOpenHashMap[VertexId, Int])]
-    type HyperAttr[VD] = HyperXOpenHashMap[VertexId, VD]
+    type BCMap = Map[VertexId, (Int, Int, OpenHashMap[VertexId, Int])]
+    type GeneralMap[VD] = OpenHashMap[VertexId, VD]
 
-    def run[VD: ClassTag, ED: ClassTag] (hypergraph: Hypergraph[VD, ED])
+    def run[VD: ClassTag, ED: ClassTag] (graph: Hypergraph[VD, ED])
     : RDD[(VertexId, Double)] = {
 
-        val num = hypergraph.vertices.count()/4
-        run(hypergraph, hypergraph.pickRandomVertices(num.toInt).toSeq)
+        val size = graph.vertices.count()
+        val num = if (size < 1000) size else 1000
+        run(graph, graph.pickRandomVertices(num.toInt).toSeq)
     }
 
 
-    def run[VD: ClassTag, ED: ClassTag] (hypergraph: Hypergraph[VD, ED],
-                                         landMarks: Seq[VertexId]): RDD[(VertexId, Double)] = {
+    def run[VD: ClassTag, ED: ClassTag] (graph: Hypergraph[VD, ED], landMarks: Seq[VertexId])
+    : RDD[(VertexId, Double)] = {
 
-        val bcHypergraph = hypergraph.mapVertices((vid, attr) =>
+        val bcGraph = graph.mapVertices((vid, attr) =>
             if (landMarks.contains(vid)) {
-                makeBCMap(vid -> (0, 0, new HyperXOpenHashMap[VertexId, Int]()))
+                makeBCMap(vid -> (0, 0, new OpenHashMap[VertexId, Int]()))
             }
             else {
                 makeBCMap()
@@ -50,26 +51,26 @@ object BaderBetweennessCentrality extends Logging {
         def vertexProgram(id: VertexId, attr: BCMap, msg: BCMap): BCMap =
             mergeMap(attr, msg)
 
-        def hyperedgeProgram(tuple: HyperedgeTuple[BCMap, ED])
+        def sendMessage(tuple: HyperedgeTuple[BCMap, ED])
         : Iterator[(VertexId, BCMap)] = {
             val newAttr = mergeMap(
                 tuple.srcAttr.map(attr => increase(attr._2, attr._1)).iterator)
 
             tuple.dstAttr.filter(attr => !is(attr._2, mergeMap(attr._2, newAttr)))
                 .flatMap(attr => Iterator((attr._1, newAttr))).iterator
-            //                    .reduce[Iterator[(VertexId, BCMap)]](_ ++ _)
         }
 
         // breadth first search
-        val bfsHypergraph = HyperPregel(bcHypergraph, initialMsg)(
-            vertexProgram, hyperedgeProgram, mergeMap)
+        val bfsGraph = HyperPregel(bcGraph, initialMsg)(
+            vertexProgram, sendMessage, mergeMap)
 
         // back propagation from the farthest vertices
-        val sc = hypergraph.vertices.context
-        val vertices = bfsHypergraph.vertices.collect()
+        val sc = graph.vertices.context
+        val vertices = bfsGraph.vertices.collect()
         val vertexBC = sc.accumulableCollection(
             mutable.HashMap[VertexId, Double]())
         vertices.foreach{v => vertexBC.value.update(v._1, 0)}
+
         val broadcastVertices = sc.broadcast(vertices)
         sc.parallelize(landMarks).foreach{source =>
             val vertexInfluence = mutable.HashMap[VertexId, Double]()
@@ -90,14 +91,12 @@ object BaderBetweennessCentrality extends Logging {
                 vertexBC += v._1 -> vertexInfluence(v._1)
             }
         }
+
         sc.parallelize(vertexBC.value.map(v => (v._1, v._2)).toSeq)
     }
 
-    def makeBCMap(x: (VertexId, (Int, Int, HyperAttr[Int]))*) =
+    def makeBCMap(x: (VertexId, (Int, Int, GeneralMap[Int]))*) =
         Map(x: _*)
-
-    //    private def makeHyperedgeAttr(x: (VertexId, Int)*) =
-    //        Map(x: _*)
 
     private def increase(map: BCMap, id: VertexId)
     : BCMap = {
@@ -106,19 +105,22 @@ object BaderBetweennessCentrality extends Logging {
                 makeSelfAttr(id) else attr)}
     }
 
-    private def mergeMap(maps: Iterator[BCMap]): BCMap = {
+    private def mergeMap(maps: Iterator[BCMap])
+    : BCMap = {
         maps.reduce(mergeMap)
     }
 
-    private def mergeMap(bcMapA: BCMap, bcMapB: BCMap): BCMap = {
+    private def mergeMap(bcMapA: BCMap, bcMapB: BCMap)
+    : BCMap = {
         val mergedMap = (bcMapA.keySet ++ bcMapB.keySet).map {
             k => k ->(math.min(bcMapDist(bcMapA, k), bcMapDist(bcMapB, k)), 0,
-                new HyperXOpenHashMap[VertexId, Int]())
+                new OpenHashMap[VertexId, Int]())
         }.toMap
         updateMap(updateMap(mergedMap, bcMapA), bcMapB)
     }
 
-    private def updateMap(bcMapA: BCMap, bcMapB: BCMap): BCMap = {
+    private def updateMap(bcMapA: BCMap, bcMapB: BCMap)
+    : BCMap = {
         if (bcMapB.isEmpty) {
             bcMapA
         }
@@ -135,7 +137,7 @@ object BaderBetweennessCentrality extends Logging {
     }
 
     private def updateMapAttr (mapA: BCMap, mapB: BCMap, k: VertexId)
-    : HyperAttr[Int] = {
+    : GeneralMap[Int] = {
         if (mapB.nonEmpty && mapB.contains(k)) {
             bcMapAttr(mapB, k).foreach(attr =>
                 bcMapAttr(mapA, k).update(attr._1, attr._2 +
@@ -144,28 +146,33 @@ object BaderBetweennessCentrality extends Logging {
         bcMapAttr(mapA, k)
     }
 
-    private def bcMapDist(map: BCMap, key: VertexId): Int = {
+    private def bcMapDist(map: BCMap, key: VertexId)
+    : Int = {
         map.getOrElse(key,
-            (Int.MaxValue, 0, null.asInstanceOf[HyperAttr[Int]]))._1
+            (Int.MaxValue, 0, null.asInstanceOf[GeneralMap[Int]]))._1
     }
 
-    private def bcMapVal(map: BCMap, key: VertexId): Int = {
+    private def bcMapVal(map: BCMap, key: VertexId)
+    : Int = {
         map.getOrElse(key,
-            (Int.MaxValue, 0, null.asInstanceOf[HyperAttr[Int]]))._2
+            (Int.MaxValue, 0, null.asInstanceOf[GeneralMap[Int]]))._2
     }
 
-    private def bcMapAttr(map: BCMap, key: VertexId): HyperAttr[Int]= {
+    private def bcMapAttr(map: BCMap, key: VertexId)
+    : GeneralMap[Int]= {
         map.getOrElse(key,
-            (Int.MaxValue, 0, null.asInstanceOf[HyperAttr[Int]]))._3
+            (Int.MaxValue, 0, null.asInstanceOf[GeneralMap[Int]]))._3
     }
 
-    private def makeSelfAttr(id: VertexId): HyperAttr[Int] = {
-        val attr = new HyperXOpenHashMap[VertexId, Int]()
+    private def makeSelfAttr(id: VertexId)
+    : GeneralMap[Int] = {
+        val attr = new OpenHashMap[VertexId, Int]()
         attr.update(id, 1)
         attr
     }
 
-    def is(a: BCMap, b: BCMap): Boolean = {
+    def is(a: BCMap, b: BCMap)
+    : Boolean = {
         if (a.size != b.size) false
         else if (a.isEmpty && b.nonEmpty || a.nonEmpty && b.isEmpty) false
         else if (a.isEmpty && b.isEmpty) true
