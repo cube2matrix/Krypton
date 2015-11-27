@@ -8,8 +8,8 @@
 ####### KEEP --mem=64000 TO USE FULL MEMORY
 #######SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=8
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=2
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
 #SBATCH --time=01:00:00
@@ -18,7 +18,7 @@
 
 # --ntasks-per-node SETS NUMBER OF SPARK EXECUTORS
 # executor_cores SETS NUMBER OF CORES PER EXECUTOR
-executor_cores=8
+executor_cores=4
 
 # MAKE SURE THAT SPARK_LOG_DIR AND SPARK_WORKER_DIR
 # ARE SET IN YOUR BASHRC, FOR EXAMPLE:
@@ -31,8 +31,8 @@ mkdir -p $SPARK_LOG_DIR $SPARK_WORKER_DIR
 module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
-PROG="/gpfs/user/xli66/Krypton/graph_generator/50lines_main.py"
-ARGS="32"
+PROG="/user/xli66/Krypton/Krypton/target/scala-2.10/krypton_2.10-0.1.jar"
+ARGS="/gpfs/courses/cse603/students/xli66/603/graph/1515lines/edges/part-00000"
 
 
 ####### DO NOT EDIT THIS PART
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=128 --executor-cores $executor_cores --py-files //gpfs//scratch//xli66//nltk.zip --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --driver-memory 4g --executor-memory 4g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"

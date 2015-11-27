@@ -32,7 +32,7 @@ module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
 PROG="/gpfs/user/xli66/Krypton/Krypton/target/scala-2.10/krypton_2.10-0.1.jar"
-ARGS="32"
+ARGS="/gpfs/courses/cse603/students/xli66/603/graph/1515lines/edges/part-00000"
 
 
 ####### DO NOT EDIT THIS PART
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --driver-memory 4g --executor-memory 2g --executor-cores $executor_cores --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --driver-memory 8g --executor-memory 2g --executor-cores $executor_cores --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
