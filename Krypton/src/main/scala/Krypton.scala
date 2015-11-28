@@ -6,10 +6,11 @@ import scala.compat.Platform.currentTime
 object Krypton {
     def main(args: Array[String]) {
         val logFile = args{0}
+        val partitionNum = args{1}.toInt
         val conf = new SparkConf().setAppName("Krypton")
         val sc = new SparkContext(conf)
 //        val g = GraphLoader.edgeListFile(sc, logFile)
-        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, 32)
+        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, partitionNum)
         val executionStart: Long = currentTime
 
         BaderBetweennessCentrality.run(g).collect.map { case (id, v) => println(id + ":" +v)}
