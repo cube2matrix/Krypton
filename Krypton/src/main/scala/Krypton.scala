@@ -1,4 +1,4 @@
-import com.darrenxyli.krypton.libs.{BaderBetweennessCentrality, BetweennessCentrality}
+import com.darrenxyli.krypton.libs.{BaderBetweennessCentrality}
 import org.apache.spark.hyperx.HypergraphLoader
 import org.apache.spark.{SparkConf, SparkContext}
 import scala.compat.Platform.currentTime
@@ -9,7 +9,7 @@ object Krypton {
         val conf = new SparkConf().setAppName("Krypton")
         val sc = new SparkContext(conf)
 //        val g = GraphLoader.edgeListFile(sc, logFile)
-        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, 1)
+        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, 48)
         val executionStart: Long = currentTime
 
         BaderBetweennessCentrality.run(g).collect.map { case (id, v) => println(id + ":" +v)}

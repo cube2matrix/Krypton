@@ -64,19 +64,24 @@ object BaderBetweennessCentrality extends Logging {
         val bfsGraph = HyperPregel(bcGraph, initialMsg)(
             vertexProgram, sendMessage, mergeMap)
 
-        // back propagation from the farthest vertices
+        // Dependency Accumulation, back propagation from the farthest vertices
         val sc = graph.vertices.context
         val vertices = bfsGraph.vertices.collect()
+//        val vertexBC = sc.accumulable(new mutable.HashMap[VertexId, Double])(HashMapParam)
         val vertexBC = sc.accumulableCollection(
             mutable.HashMap[VertexId, Double]())
-        vertices.foreach{v => vertexBC.value.update(v._1, 0)}
-
+        vertices.foreach{v => vertexBC.value.update(v._1, 0.0)}
         val broadcastVertices = sc.broadcast(vertices)
-        sc.parallelize(landMarks).foreach{source =>
-            val vertexInfluence = mutable.HashMap[VertexId, Double]()
+
+        sc.parallelize(landMarks).foreach{ source =>
+
+            val vertexInfluence = new mutable.HashMap[VertexId, Double]()
             val sortedVertices = broadcastVertices.value.filter(v =>
                 v._2.contains(source)).sortBy(v => -v._2(source)._1)
-            sortedVertices.foreach(v => vertexInfluence.update(v._1, 0))
+
+            // initial g
+            sortedVertices.foreach(v => vertexInfluence.update(v._1, 0.0))
+
             sortedVertices.foreach{v =>
                 vertexInfluence(v._1) += 1
                 v._2(source)._3.foreach{precedent =>
