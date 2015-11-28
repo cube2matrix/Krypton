@@ -29,7 +29,8 @@ object BaderBetweennessCentrality extends Logging {
     : RDD[(VertexId, Double)] = {
 
         val size = graph.vertices.count()
-        val num = math.log(size.toDouble)
+        // val num = math.log(size.toDouble)
+	val num = size/2
         run(graph, graph.pickRandomVertices(num.toInt).toSeq)
     }
 
