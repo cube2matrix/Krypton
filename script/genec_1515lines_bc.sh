@@ -12,7 +12,7 @@
 #SBATCH --ntasks-per-node=3
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
-#SBATCH --time=12:00:00
+#SBATCH --time=04:00:00
 #SBATCH --mail-user=xli66@buffalo.edu
 #SBATCH --mail-type=ALL
 
@@ -56,7 +56,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --driver-memory 12g --executor-memory 8g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --num-executors 3 --driver-memory 6g --executor-memory 12g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"

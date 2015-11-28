@@ -9,7 +9,7 @@ object Krypton {
         val conf = new SparkConf().setAppName("Krypton")
         val sc = new SparkContext(conf)
 //        val g = GraphLoader.edgeListFile(sc, logFile)
-        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, 48)
+        val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, 32)
         val executionStart: Long = currentTime
 
         BaderBetweennessCentrality.run(g).collect.map { case (id, v) => println(id + ":" +v)}
