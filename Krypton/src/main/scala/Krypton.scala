@@ -17,6 +17,6 @@ object Krypton {
 
         val total = currentTime - executionStart
         println("[total " + total + "ms]")
-        sc.stop()
+        // sc.stop()
     }
 }
