@@ -17,6 +17,7 @@ object Krypton {
 
         val total = currentTime - executionStart
         println("[total " + total + "ms]")
-        // sc.stop()
+        Thread sleep 10000
+        sc.stop()
     }
 }
