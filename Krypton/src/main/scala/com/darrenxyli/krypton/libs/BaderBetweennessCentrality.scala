@@ -30,8 +30,10 @@ object BaderBetweennessCentrality extends Logging {
 
         val size = graph.vertices.count()
         // val num = math.log(size.toDouble)
-	val num = size/2
-        run(graph, graph.pickRandomVertices(num.toInt).toSeq)
+        val num = size / 2
+        val startVertexes = (1.toLong to num)
+//        run(graph, graph.pickRandomVertices(num.toInt).toSeq)
+        run(graph, startVertexes.toSeq)
     }
 
 
