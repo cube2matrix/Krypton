@@ -2,7 +2,7 @@ package com.darrenxyli.krypton.libs
 
 import org.apache.spark.Logging
 import org.apache.spark.graphx._
-import org.apache.spark.hyperx.{HyperPregel, HyperedgeTuple, Hypergraph}
+import org.apache.spark.hyperx.{HyperPregel => Pregel, HyperedgeTuple => EdgeTriplet, Hypergraph => Graph}
 import org.apache.spark.rdd.RDD
 
 import scala.collection.mutable
@@ -25,7 +25,7 @@ object BaderBetweennessCentrality extends Logging {
     type BCMap = Map[VertexId, (Int, Int, OpenHashMap[VertexId, Int])]
     type GeneralMap[VD] = OpenHashMap[VertexId, VD]
 
-    def run[VD: ClassTag, ED: ClassTag] (graph: Hypergraph[VD, ED])
+    def run[VD: ClassTag, ED: ClassTag] (graph: Graph[VD, ED])
     : RDD[(VertexId, Double)] = {
 
         val size = graph.vertices.count()
@@ -34,7 +34,7 @@ object BaderBetweennessCentrality extends Logging {
     }
 
 
-    def run[VD: ClassTag, ED: ClassTag] (graph: Hypergraph[VD, ED], landMarks: Seq[VertexId])
+    def run[VD: ClassTag, ED: ClassTag] (graph: Graph[VD, ED], landMarks: Seq[VertexId])
     : RDD[(VertexId, Double)] = {
 
         val bcGraph = graph.mapVertices((vid, attr) =>
@@ -51,7 +51,7 @@ object BaderBetweennessCentrality extends Logging {
         def vertexProgram(id: VertexId, attr: BCMap, msg: BCMap): BCMap =
             mergeMap(attr, msg)
 
-        def sendMessage(tuple: HyperedgeTuple[BCMap, ED])
+        def sendMessage(tuple: EdgeTriplet[BCMap, ED])
         : Iterator[(VertexId, BCMap)] = {
             val newAttr = mergeMap(
                 tuple.srcAttr.map(attr => increase(attr._2, attr._1)).iterator)
@@ -61,7 +61,7 @@ object BaderBetweennessCentrality extends Logging {
         }
 
         // breadth first search
-        val bfsGraph = HyperPregel(bcGraph, initialMsg)(
+        val bfsGraph = Pregel(bcGraph, initialMsg)(
             vertexProgram, sendMessage, mergeMap)
 
         // Dependency Accumulation, back propagation from the farthest vertices
@@ -128,14 +128,12 @@ object BaderBetweennessCentrality extends Logging {
     : BCMap = {
         if (bcMapB.isEmpty) {
             bcMapA
-        }
-        else {
-            bcMapA.keySet.map { k => k ->(bcMapDist(bcMapA, k),
-                if (bcMapDist(bcMapA, k) == bcMapDist(bcMapB, k))
-                    bcMapVal(bcMapA, k) + bcMapVal(bcMapB, k)
+        } else {
+            bcMapA.keySet.map { k => k ->(
+                bcMapDist(bcMapA, k),
+                if (bcMapDist(bcMapA, k) == bcMapDist(bcMapB, k)) bcMapVal(bcMapA, k) + bcMapVal(bcMapB, k)
                 else bcMapVal(bcMapA, k),
-                if (bcMapDist(bcMapA, k) == bcMapDist(bcMapB, k))
-                    updateMapAttr(bcMapA, bcMapB, k)
+                if (bcMapDist(bcMapA, k) == bcMapDist(bcMapB, k)) updateMapAttr(bcMapA, bcMapB, k)
                 else bcMapAttr(bcMapA, k))
             }.toMap
         }
