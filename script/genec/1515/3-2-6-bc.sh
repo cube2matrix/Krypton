@@ -32,7 +32,7 @@ module load python/anaconda
 
 # SET YOUR COMMAND AND ARGUMENTS
 PROG="/user/xli66/Krypton/Krypton/target/scala-2.10/krypton_2.10-0.1.jar"
-ARGS="/gpfs/courses/cse603/students/xli66/603/graph/3904lines/edges/part-00000"
+ARGS="/gpfs/courses/cse603/students/xli66/603/graph/1515lines/edges/part-00000"
 PNUM="36"
 
 ####### DO NOT EDIT THIS PART
