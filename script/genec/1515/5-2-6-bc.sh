@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --conf spark.driver.maxResultSize=5g --num-executors 10 --driver-memory 6g --executor-memory 8g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --conf spark.storage.memoryFraction=0.3 --conf spark.shuffle.memoryFraction=0 --conf spark.default.parallelism=$PNUM --conf spark.driver.maxResultSize=5g --num-executors 10 --driver-memory 6g --executor-memory 8g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
