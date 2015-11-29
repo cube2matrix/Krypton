@@ -6,7 +6,7 @@
 
 ####### CUSTOMIZE THIS SECTION FOR YOUR JOB
 ####### KEEP --mem=64000 TO USE FULL MEMORY
-#SBATCH --mem=64000
+#SBATCH --mem=80000
 #SBATCH --job-name="Krypton"
 #SBATCH --nodes=6
 #SBATCH --ntasks-per-node=12
