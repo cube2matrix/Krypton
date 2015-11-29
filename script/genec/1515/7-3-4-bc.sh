@@ -6,10 +6,10 @@
 
 ####### CUSTOMIZE THIS SECTION FOR YOUR JOB
 ####### KEEP --mem=64000 TO USE FULL MEMORY
-#SBATCH --mem=48000
+#SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
 #SBATCH --nodes=7
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=12
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
 #SBATCH --time=04:00:00
@@ -18,7 +18,7 @@
 
 # --ntasks-per-node SETS NUMBER OF SPARK EXECUTORS
 # executor_cores SETS NUMBER OF CORES PER EXECUTOR
-executor_cores=6
+executor_cores=4
 
 # MAKE SURE THAT SPARK_LOG_DIR AND SPARK_WORKER_DIR
 # ARE SET IN YOUR BASHRC, FOR EXAMPLE:
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --conf spark.storage.memoryFraction=0.3 --conf spark.shuffle.memoryFraction=0 --conf spark.default.parallelism=$PNUM --conf spark.driver.maxResultSize=5g --num-executors 14 --driver-memory 6g --executor-memory 8g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --conf spark.storage.memoryFraction=0.3 --conf spark.shuffle.memoryFraction=0 --conf spark.default.parallelism=$PNUM --conf spark.driver.maxResultSize=14g --num-executors 20 --driver-memory 14g --executor-memory 12g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"

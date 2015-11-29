@@ -13,7 +13,7 @@ object Krypton {
         val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, partitionNum)
         val executionStart: Long = currentTime
 
-        BaderBetweennessCentrality.run(g).collect.map { case (id, v) => println(id + ":" +v)}
+        BaderBetweennessCentrality.run(g).collect()
 
         val total = currentTime - executionStart
         println("[total " + total + "ms]")
