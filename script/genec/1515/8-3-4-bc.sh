@@ -9,7 +9,7 @@
 #SBATCH --mem=80000
 #SBATCH --job-name="Krypton"
 #SBATCH --nodes=8
-#SBATCH --ntasks-per-node=12
+#SBATCH --ntasks-per-node=3
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
 #SBATCH --time=04:00:00
@@ -54,7 +54,7 @@ MASTER="spark://${NODES[0]}:7077"
 # ALL OTHER NODES ARE WORKERS
 mkdir -p $SLURM_SUBMIT_DIR/$SLURM_JOB_ID
 for i in `seq 0 $LAST`; do
-  ssh ${NODES[$i]} "cd $SPARK_HOME; module load java/1.8.0_45; nohup ./bin/spark-class org.apache.spark.deploy.worker.Worker $MASTER &> $SLURM_SUBMIT_DIR/$SLURM_JOB_ID/nohup-${NODES[$i]}.$i.out" &
+  ssh ${NODES[$i]} "cd $SPARK_HOME;  nohup ./bin/spark-class org.apache.spark.deploy.worker.Worker $MASTER &> $SLURM_SUBMIT_DIR/$SLURM_JOB_ID/nohup-${NODES[$i]}.$i.out" &
 done
 
 # SUBMIT PYSPARK JOB
