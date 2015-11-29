@@ -9,7 +9,7 @@
 #SBATCH --mem=48000
 #SBATCH --job-name="Krypton"
 #SBATCH --nodes=2
-#SBATCH --ntasks-per-node=3
+#SBATCH --ntasks-per-node=12
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
 #SBATCH --time=06:00:00
