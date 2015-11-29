@@ -9,7 +9,7 @@
 #######SBATCH --mem=64000
 #SBATCH --job-name="Krypton"
 #SBATCH --nodes=4
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=8
 #SBATCH --output=%j.stdout
 #SBATCH --error=%j.stderr
 #SBATCH --time=01:00:00
@@ -57,7 +57,7 @@ for i in `seq 0 $LAST`; do
 done
 
 # SUBMIT PYSPARK JOB
-$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --num-executors 8 --conf spark.storage.memoryFraction=0.3 --conf spark.shuffle.memoryFraction=0 --conf spark.default.parallelism=$PNUM --conf spark.driver.maxResultSize=5g --driver-memory 6g --executor-memory 6g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
+$SPARK_HOME/bin/spark-submit --conf spark.akka.frameSize=512 --num-executors 7 --conf spark.storage.memoryFraction=0.3 --conf spark.shuffle.memoryFraction=0 --conf spark.default.parallelism=$PNUM --conf spark.driver.maxResultSize=5g --driver-memory 6g --executor-memory 6g --executor-cores $executor_cores --jars $(echo /user/xli66/Krypton/Krypton/lib/*.jar | tr ' ' ',') --master $MASTER $PROG $ARGS $PNUM
 
 # CLEAN SPARK JOB
 ssh ${NODES[0]} "cd $SPARK_HOME; ./sbin/stop-master.sh"
