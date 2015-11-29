@@ -15,6 +15,7 @@
 #SBATCH --time=04:00:00
 #SBATCH --mail-user=xli66@buffalo.edu
 #SBATCH --mail-type=ALL
+#SBATCH --requeue
 
 # --ntasks-per-node SETS NUMBER OF SPARK EXECUTORS
 # executor_cores SETS NUMBER OF CORES PER EXECUTOR
