@@ -52,14 +52,15 @@ def betweenness_centrality_parallel(G, processes=None):
     return bt_c
 
 if __name__ == "__main__":
-    G_ba = nx.barabasi_albert_graph(4000, 2)
-    for G in [G_ba]:
+
+    for factor in xrange(30):
+        G = nx.barabasi_albert_graph(100*(factor+1), 2)
         print("")
         print("Computing betweenness centrality for:")
         print(nx.info(G))
         print("\tParallel version")
         start = time.time()
-        bt = betweenness_centrality_parallel(G, 4)
+        bt = betweenness_centrality_parallel(G, factor+1)
         print("\t\tTime: %.8F" % (time.time()-start))
         print("\t\tBetweenness centrality for node 0: %.5f" % (bt[0]))
         print("\tNon-Parallel version")

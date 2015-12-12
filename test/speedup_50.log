@@ -1,0 +1,391 @@
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(50,2)
+Type: Graph
+Number of nodes: 50
+Number of edges: 96
+Average degree:   3.8400
+	Parallel version
+		Time: 0.02963400
+		Betweenness centrality for node 0: 0.13241
+	Non-Parallel version
+		Time: 0.01642203 seconds
+		Betweenness centrality for node 0: 0.13241
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(100,2)
+Type: Graph
+Number of nodes: 100
+Number of edges: 196
+Average degree:   3.9200
+	Parallel version
+		Time: 0.04606700
+		Betweenness centrality for node 0: 0.02302
+	Non-Parallel version
+		Time: 0.06541991 seconds
+		Betweenness centrality for node 0: 0.02302
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(150,2)
+Type: Graph
+Number of nodes: 150
+Number of edges: 296
+Average degree:   3.9467
+	Parallel version
+		Time: 0.07119513
+		Betweenness centrality for node 0: 0.04887
+	Non-Parallel version
+		Time: 0.14494300 seconds
+		Betweenness centrality for node 0: 0.04887
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(200,2)
+Type: Graph
+Number of nodes: 200
+Number of edges: 396
+Average degree:   3.9600
+	Parallel version
+		Time: 0.08985996
+		Betweenness centrality for node 0: 0.32383
+	Non-Parallel version
+		Time: 0.25768614 seconds
+		Betweenness centrality for node 0: 0.32383
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(250,2)
+Type: Graph
+Number of nodes: 250
+Number of edges: 496
+Average degree:   3.9680
+	Parallel version
+		Time: 0.11565995
+		Betweenness centrality for node 0: 0.06943
+	Non-Parallel version
+		Time: 0.40067601 seconds
+		Betweenness centrality for node 0: 0.06943
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(300,2)
+Type: Graph
+Number of nodes: 300
+Number of edges: 596
+Average degree:   3.9733
+	Parallel version
+		Time: 0.14758706
+		Betweenness centrality for node 0: 0.02600
+	Non-Parallel version
+		Time: 0.57588601 seconds
+		Betweenness centrality for node 0: 0.02600
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(350,2)
+Type: Graph
+Number of nodes: 350
+Number of edges: 696
+Average degree:   3.9771
+	Parallel version
+		Time: 0.18902016
+		Betweenness centrality for node 0: 0.07716
+	Non-Parallel version
+		Time: 0.80948114 seconds
+		Betweenness centrality for node 0: 0.07716
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(400,2)
+Type: Graph
+Number of nodes: 400
+Number of edges: 796
+Average degree:   3.9800
+	Parallel version
+		Time: 0.23552108
+		Betweenness centrality for node 0: 0.04064
+	Non-Parallel version
+		Time: 1.05651283 seconds
+		Betweenness centrality for node 0: 0.04064
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(450,2)
+Type: Graph
+Number of nodes: 450
+Number of edges: 896
+Average degree:   3.9822
+	Parallel version
+		Time: 0.28079510
+		Betweenness centrality for node 0: 0.10977
+	Non-Parallel version
+		Time: 1.36570787 seconds
+		Betweenness centrality for node 0: 0.10977
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(500,2)
+Type: Graph
+Number of nodes: 500
+Number of edges: 996
+Average degree:   3.9840
+	Parallel version
+		Time: 0.30960798
+		Betweenness centrality for node 0: 0.15461
+	Non-Parallel version
+		Time: 1.69027185 seconds
+		Betweenness centrality for node 0: 0.15461
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(550,2)
+Type: Graph
+Number of nodes: 550
+Number of edges: 1096
+Average degree:   3.9855
+	Parallel version
+		Time: 0.36099601
+		Betweenness centrality for node 0: 0.15650
+	Non-Parallel version
+		Time: 2.08898282 seconds
+		Betweenness centrality for node 0: 0.15650
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(600,2)
+Type: Graph
+Number of nodes: 600
+Number of edges: 1196
+Average degree:   3.9867
+	Parallel version
+		Time: 0.41141009
+		Betweenness centrality for node 0: 0.07955
+	Non-Parallel version
+		Time: 2.48243594 seconds
+		Betweenness centrality for node 0: 0.07955
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(650,2)
+Type: Graph
+Number of nodes: 650
+Number of edges: 1296
+Average degree:   3.9877
+	Parallel version
+		Time: 0.46504498
+		Betweenness centrality for node 0: 0.08562
+	Non-Parallel version
+		Time: 2.98879695 seconds
+		Betweenness centrality for node 0: 0.08562
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(700,2)
+Type: Graph
+Number of nodes: 700
+Number of edges: 1396
+Average degree:   3.9886
+	Parallel version
+		Time: 0.49297690
+		Betweenness centrality for node 0: 0.25729
+	Non-Parallel version
+		Time: 3.47480798 seconds
+		Betweenness centrality for node 0: 0.25729
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(750,2)
+Type: Graph
+Number of nodes: 750
+Number of edges: 1496
+Average degree:   3.9893
+	Parallel version
+		Time: 0.90491605
+		Betweenness centrality for node 0: 0.22681
+	Non-Parallel version
+		Time: 3.97663713 seconds
+		Betweenness centrality for node 0: 0.22681
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(800,2)
+Type: Graph
+Number of nodes: 800
+Number of edges: 1596
+Average degree:   3.9900
+	Parallel version
+		Time: 0.83821702
+		Betweenness centrality for node 0: 0.13835
+	Non-Parallel version
+		Time: 4.76443696 seconds
+		Betweenness centrality for node 0: 0.13835
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(850,2)
+Type: Graph
+Number of nodes: 850
+Number of edges: 1696
+Average degree:   3.9906
+	Parallel version
+		Time: 0.65563989
+		Betweenness centrality for node 0: 0.05817
+	Non-Parallel version
+		Time: 5.61681294 seconds
+		Betweenness centrality for node 0: 0.05817
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(900,2)
+Type: Graph
+Number of nodes: 900
+Number of edges: 1796
+Average degree:   3.9911
+	Parallel version
+		Time: 0.76058292
+		Betweenness centrality for node 0: 0.04475
+	Non-Parallel version
+		Time: 6.48718095 seconds
+		Betweenness centrality for node 0: 0.04475
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(950,2)
+Type: Graph
+Number of nodes: 950
+Number of edges: 1896
+Average degree:   3.9916
+	Parallel version
+		Time: 0.84696293
+		Betweenness centrality for node 0: 0.04201
+	Non-Parallel version
+		Time: 7.01384401 seconds
+		Betweenness centrality for node 0: 0.04201
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1000,2)
+Type: Graph
+Number of nodes: 1000
+Number of edges: 1996
+Average degree:   3.9920
+	Parallel version
+		Time: 0.81602407
+		Betweenness centrality for node 0: 0.09913
+	Non-Parallel version
+		Time: 7.86393189 seconds
+		Betweenness centrality for node 0: 0.09913
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1050,2)
+Type: Graph
+Number of nodes: 1050
+Number of edges: 2096
+Average degree:   3.9924
+	Parallel version
+		Time: 0.87295699
+		Betweenness centrality for node 0: 0.20648
+	Non-Parallel version
+		Time: 8.82726908 seconds
+		Betweenness centrality for node 0: 0.20648
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1100,2)
+Type: Graph
+Number of nodes: 1100
+Number of edges: 2196
+Average degree:   3.9927
+	Parallel version
+		Time: 1.03863215
+		Betweenness centrality for node 0: 0.00000
+	Non-Parallel version
+		Time: 10.14707589 seconds
+		Betweenness centrality for node 0: 0.00000
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1150,2)
+Type: Graph
+Number of nodes: 1150
+Number of edges: 2296
+Average degree:   3.9930
+	Parallel version
+		Time: 1.06601095
+		Betweenness centrality for node 0: 0.18820
+	Non-Parallel version
+		Time: 11.50804687 seconds
+		Betweenness centrality for node 0: 0.18820
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1200,2)
+Type: Graph
+Number of nodes: 1200
+Number of edges: 2396
+Average degree:   3.9933
+	Parallel version
+		Time: 1.24578691
+		Betweenness centrality for node 0: 0.02960
+	Non-Parallel version
+		Time: 12.21795106 seconds
+		Betweenness centrality for node 0: 0.02960
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1250,2)
+Type: Graph
+Number of nodes: 1250
+Number of edges: 2496
+Average degree:   3.9936
+	Parallel version
+		Time: 1.34002113
+		Betweenness centrality for node 0: 0.13239
+	Non-Parallel version
+		Time: 14.13429999 seconds
+		Betweenness centrality for node 0: 0.13239
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1300,2)
+Type: Graph
+Number of nodes: 1300
+Number of edges: 2596
+Average degree:   3.9938
+	Parallel version
+		Time: 1.45879197
+		Betweenness centrality for node 0: 0.04201
+	Non-Parallel version
+		Time: 14.78551197 seconds
+		Betweenness centrality for node 0: 0.04201
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1350,2)
+Type: Graph
+Number of nodes: 1350
+Number of edges: 2696
+Average degree:   3.9941
+	Parallel version
+		Time: 1.58779216
+		Betweenness centrality for node 0: 0.00389
+	Non-Parallel version
+		Time: 16.91024899 seconds
+		Betweenness centrality for node 0: 0.00389
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1400,2)
+Type: Graph
+Number of nodes: 1400
+Number of edges: 2796
+Average degree:   3.9943
+	Parallel version
+		Time: 1.84575605
+		Betweenness centrality for node 0: 0.01657
+	Non-Parallel version
+		Time: 18.28203011 seconds
+		Betweenness centrality for node 0: 0.01657
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1450,2)
+Type: Graph
+Number of nodes: 1450
+Number of edges: 2896
+Average degree:   3.9945
+	Parallel version
+		Time: 2.00884795
+		Betweenness centrality for node 0: 0.16142
+	Non-Parallel version
+		Time: 19.70006990 seconds
+		Betweenness centrality for node 0: 0.16142
+
+Computing betweenness centrality for:
+Name: barabasi_albert_graph(1500,2)
+Type: Graph
+Number of nodes: 1500
+Number of edges: 2996
+Average degree:   3.9947
+	Parallel version
+		Time: 6.14972901
+		Betweenness centrality for node 0: 0.20755
+	Non-Parallel version
+		Time: 22.86838102 seconds
+		Betweenness centrality for node 0: 0.20755
+
