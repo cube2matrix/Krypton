@@ -69,9 +69,8 @@ object BaderBetweennessCentrality extends Logging {
         // Dependency Accumulation, back propagation from the farthest vertices
         val sc = graph.vertices.context
         val vertices = bfsGraph.vertices.collect()
-//        val vertexBC = sc.accumulable(new mutable.HashMap[VertexId, Double])(HashMapParam)
-        val vertexBC = sc.accumulableCollection(
-            mutable.HashMap[VertexId, Double]())
+        val vertexBC = sc.accumulable(new mutable.HashMap[VertexId, Double])(HashMapParam)
+//        val vertexBC = sc.accumulableCollection(mutable.HashMap[VertexId, Double]())
         vertices.foreach{v => vertexBC.value.update(v._1, 0.0)}
         val broadcastVertices = sc.broadcast(vertices)
 

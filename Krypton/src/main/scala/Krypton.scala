@@ -9,7 +9,6 @@ object Krypton {
         val partitionNum = args{1}.toInt
         val conf = new SparkConf().setAppName("Krypton")
         val sc = new SparkContext(conf)
-//        val g = GraphLoader.edgeListFile(sc, logFile)
         val g = HypergraphLoader.hyperedgeListFile(sc, logFile, " ", false, partitionNum)
         val executionStart: Long = currentTime
 
