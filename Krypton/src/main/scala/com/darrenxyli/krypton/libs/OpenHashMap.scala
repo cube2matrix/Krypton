@@ -7,20 +7,6 @@ import scala.reflect._
  * supports insertions and updates, but not deletions. This map is about an
  * order of magnitude faster than java.util.HashMap, while using much less
  * space overhead.
- *
- * Under the hood, it uses our OpenHashSet implementation.
- *
- * There is a bug in the original Spark 1.1.0 implementation:
- * If there are more than 11744053 pairs stored, the update method will
- * miserably fail to set the correct value for the key. Also, the update of the
- * value on an existing key may or may not result to correct set.
- *
- * The bug is caused by wrong pos calculating for a given key: the pos is
- * calculated before rehashing the underlying key set, and the value assigned to
- * that may overwrite the value of an overflow key. To fix the bug, we first
- * add the key, and rehash accordingly; then the pos is calculated based on the
- * new key set and the value is assigned.
- *
  */
 class OpenHashMap[@specialized(Long, Int) K: ClassTag,
 @specialized(Long, Int, Double) V: ClassTag](val keySet:OpenHashSet[K],

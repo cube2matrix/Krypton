@@ -8,23 +8,8 @@ import scala.reflect._
 /**
  * A simple, fast hash set optimized for non-null insertion-only use case, where keys are never
  * removed.
- *
- * The underlying implementation uses Scala compiler's specialization to generate optimized
- * storage for two primitive types (Long and Int). It is much faster than Java's standard HashSet
- * while incurring much less memory overhead. This can serve as building blocks for higher level
- * data structures such as an optimized HashMap.
- *
- * This OpenHashSet is designed to serve as building blocks for higher level data structures
- * such as an optimized hash map. Compared with standard hash set implementations, this class
- * provides its various callbacks interfaces (e.g. allocateFunc, moveFunc) and interfaces to
- * retrieve the position of a key in the underlying array.
- *
- * It uses quadratic probing with a power-of-2 hash table size, which is guaranteed
- * to explore all spaces for each key (see http://en.wikipedia.org/wiki/Quadratic_probing).
  */
-class OpenHashSet[@specialized(Long, Int) T: ClassTag](
-                                                                initialCapacity: Int,
-                                                                loadFactor: Double)
+class OpenHashSet[@specialized(Long, Int) T: ClassTag](initialCapacity: Int, loadFactor: Double)
     extends Serializable {
 
     require(initialCapacity <= (1 << 29), "Can't make capacity bigger than 2^29 elements")
