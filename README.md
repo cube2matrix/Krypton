@@ -81,15 +81,15 @@ The predecessor information is used in the dependency accumulation step (step II
 
 where,  δst (v) is the pairwise dependencies of vertices s and v.
 
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation4.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation4.png)
 
 Given the information of predecessors of each vertex, we can get the dependency values δ_s (v) without the need to traverse all the other vertices. The new equation is:
 
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation5.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation5.png)
 
 The algorithm is below:
 
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/Algorithm.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/Algorithm.png)
 
 ## EXPERIMENTS
 
@@ -102,21 +102,21 @@ We test the program on CCR HPC in Buffalo, with computation resources range from
 Based on the CCR system, we compute approximate betweenness centrality for a graph of 244,270 vertices on 96 cores with 128 partitions. The whole progress costs only 6.09 minutes. 
 #### Effect of partition number.
 As we can see, when we set the num of partition to be above 6, the runtime efficiency would be dramatically improved
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/partition_effect.png) 
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/partition_effect.png) 
 						Figure 1. Partition effect
 
 #### Influence of workload
 We can find that the implementation of the algorithm can work well with a workload of 103352-vertice graph structure data. However, when we increase the workload to be 244270, the runtime performance looks much worse than the previous one. Thus, a smaller workload of 103352-vertice is more suitable in our system.
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/influence_workload.png) 
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/influence_workload.png) 
 						Figure 2. Influence of workload
 
 #### Deeper inspect of partition numbers.
 We keep the workload constant, and then we find that larger number of partitions doesn’t mean a better performance in teams of runtime. As we obtain from figure, when the number of cores is below 60, a larger amount (256) of partitions can achieve a lower total runtime. However, when the number of used cores increase to be above 60, a larger amount of partitions is no longer a good choice. Instead, a smaller (128) amount of partition may achieve a better runtime performance.
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/partitionNum_vs_coreNum.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/partitionNum_vs_coreNum.png)
 						Figure 3. Partition Num vs. Cores Num
 #### Speedup
 We utilized only one node to calculate the speedup performance of the parallel algorithm(using the networkx package). The parallel speedup of the CCR implementation is 11.4 on 24 cores for networkx.
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/speedUp.png) 
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/speedUp.png) 
 						Figure 4. Speedup performance
 
 
