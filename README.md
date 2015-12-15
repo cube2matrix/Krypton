@@ -1,5 +1,4 @@
-# Krypton
-Massive parallelism computation by Spark.
+# Krypton - Massive parallelism computation by Spark
 
 
 **Keywords**: *Spark, BFS, Shortest Path, Betweenness centrality, Text Analysis*
@@ -52,9 +51,7 @@ where <math><msubsup><mi>&sigma;</mi> <mi>s,t</mi> <mi></mi></msubsup></math> is
 
 
 ### Algorithm of computing betweenness centrality
-Assume a graph G = (V,E), `n` is the number of vertices, and `m` is the number of edges. The main idea of the algorithm is to perform `n` breadth-first graph traversals and augment each traversal to compute the number of shortest paths passing through each vertex. We store a multiset `P` of predecessors associated with each vertex. Here, a vertex belongs to the predecessor multiset of `w` if
->>>>>>> 94fb299d574c6b0977467546213c78e9642cff43
-
+[Ulrik Brandes](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Algorithm%20for%20Betweenness%20Centrality.pdf) has proposed a algorithm to decrease the complextity of O(n^3) to O(mn) for unweighted graph, but its sequencial algorithm. So we finally implement the algorithm proposed by [David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/Parallel%20Algorithms%20for%20Evaluating%20Centrality%20Indices%20in%20Real-world%20Networks.pdf), which still be O(n^3) complexity but can be implemented in paralle mode. Assume a graph G = (V,E), `n` is the number of vertices, and `m` is the number of edges. The main idea of the algorithm is to perform `n` breadth-first graph traversals and augment each traversal to compute the number of shortest paths passing through each vertex. We store a multiset `P` of predecessors associated with each vertex. Here, a vertex belongs to the predecessor multiset of `w` if
 ![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation2.png)
 
 where, `d(s, v)` shortest path from source vertex `s` to vertex `v`.
@@ -137,6 +134,13 @@ We keep the workload constant, and then we find that larger number of partitions
 #### Speedup
 We utilized a single node to calculate the speedup performance of the similar parallel algorithm which implemented by [networkx](https://github.com/networkx/networkx) in multithread. The parallel speedup of the program running on CCR rush server is 11.4 on 24 cores for networkx. Compare to the speedup that Bader mentioned in his paper, 10.5, is increased a little bit. Consider the test machine hardware of us is much better than his, this result is quite reasonable.
 ![Figure 4. Speed up performance](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/speedUp.png) 
+
+#### Reference
+1.[Parallel Algorithms for Evaluating Centrality Indices in Real-world Networks, David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/Parallel%20Algorithms%20for%20Evaluating%20Centrality%20Indices%20in%20Real-world%20Networks.pdf)
+
+2.[A Faster Parallel Algorithm and Efficient Multithreaded Implementations, David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Parallel%20Algorithm%20and%20Efficient%20Multithreaded%20Implementations.pdf)
+
+3.[A Faster Algorithm for Betweenness Centrality, Ulrik Brandes](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Algorithm%20for%20Betweenness%20Centrality.pdf)
                         
 
 
