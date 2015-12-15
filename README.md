@@ -69,7 +69,8 @@ Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to 
 			EMIT(id, result)
 
 ### Algorithm of computing betweenness centrality
-The idea of algorithm we implemented is from [David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/Parallel%20Algorithms%20for%20Evaluating%20Centrality%20Indices%20in%20Real-world%20Networks.pdf)
+The idea of algorithm we implemented is from [David A. Bader]	
+(https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/Parallel%20Algorithms%20for%20Evaluating%20Centrality%20Indices%20in%20Real-world%20Networks.pdf)
 Assume a graph G = (V,E), n is the number of vertices, and m is the number of edges. The main idea of the algorithm is to perform n breadth-first graph traversals, and augment each traversal to compute the number of shortest paths passing through each vertex. We store a multiset P of predecessors associated with each vertex. Here, a vertex belongs to the predecessor multiset of w if
 
 ![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation2.png)
@@ -89,7 +90,43 @@ Given the information of predecessors of each vertex, we can get the dependency 
 
 The algorithm is below:
 
-![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/Algorithm.png)
+
+	Algorithm
+	Input: G(V, E)
+	Output: BC[1...n], where BC[v] gives the	 centrality score for vertex.
+	1: for all v ∈ V in parallel do
+	2: 		BC[v] ← 0
+	3: for all s ∈ V do
+		I. Initialization
+	4: for all t ∈ V in parallel do
+	5: 		P[t] ← empty multiset, σ[t] ← 0, d[t] ← -1
+	6:	σ[s] ← 1, d[s] ← 0
+	7: phase ← 0, S[phase] ← empty stack
+	8: push s → S[phase]
+	9: count ← 1
+		II. Graph traversal for shortest path discovery and counting
+	10:	while count > 0 do
+	11:		count ← 0
+	12:		for all v ∈ S[phase] in parallel do
+	13:			for each neighbor w of v in parallel do
+	14:				if d[w] < 0 then
+	15:					push w → S[phase+1]
+	16:					count ← count + 1
+	17:					d[w] ← d[v] + 1
+	18:				if d[w] = d[v] + 1 then
+	19:					 σ[w] ← σ[w] + σ[v]
+	20:					 append v → P[w]
+	21:			phase ← phase + 1
+	22:		phase ← phase - 1
+		III. Dependency accumulation by back-propagation
+	23:	δ[t] ← 0 ∀ t ∈ V
+	24:	while phase > 0 do
+	25:		for all w ∈ S[phase] in parallel do
+	26:			for all v ∈ P[w] do
+	27:				δ[v] ← δ[v] + σ[v]/σ[w] * (1+δ[w])
+	28:			BC[w] ← BC[w] + δ[w]
+	29:		phase ← phase - 1
+
 
 ## EXPERIMENTS
 
