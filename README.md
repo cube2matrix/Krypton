@@ -93,6 +93,9 @@ Given the information of predecessors of each vertex, we can get the dependency 
 
 ![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation5.png)
 
+The algorithm is below:
+
+![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/Algorithm.png)
 
 ## EXPERIMENTS
 
