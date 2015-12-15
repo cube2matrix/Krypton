@@ -1,7 +1,6 @@
 # Krypton
 Massive parallelism computation by Spark.
 
-**Abstract**: Text analysis is a very computation-resource-cost activity with high memory requirement, but normal single computer, which with limited CPU and memory, can not handle it fast. With Spark we can do it better, spark is known well for streaming iterative computation and distributed memory building on large scale of clusters. And with the research paper dataset from PubMed, our idea becomes to category documents by calculating betweenness centrality of words from text network with Spark. The intensive comparative evaluation has been made with three typical indexes in network analysis which are degree centrality, closeness centrality, and betweenness centrality. For a documentation, if the topic of documentation is biology, then a lot of compound nouns with the word “biology” should appear frequently. Therefore, the topics of documents can be presumed by extracting the compound nouns from the document and by focusing on nouns that consist them. The measurement  is the appearance ratio of category name at top n words with high centrality.
 
 **Keywords**: *Spark, BFS, Shortest Path, Betweenness centrality, Text Analysis*
 
@@ -16,14 +15,9 @@ Massive parallelism computation by Spark.
 
 	class Node {
 		long id,
-		Object attr
+		Map sourceId -> (distance, sigma, precedence[count])
 	}
-		
 
-#### Physic View
-![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/graph_physic_view.png)
-
-The vertices are partitioned by id. Within each vertex partition, the routing table stores for each edge partition the set of vertices present. Vertex 6 and adjacent edges (shown with dotted lines) have been restricted from the graph, so they are removed from the edges and the routing table. Vertex 6 remains in the vertex partitions, but it is hidden by the bitmask.
 
 ### Betweenness Centrality
 **Betweenness centrality** is an indicator of a node's centrality in a network. It is equal to the number of shortest paths from all vertices to all others that pass through that node. A node with high betweenness centrality has a large influence on the transfer of items through the network, under the assumption that item transfer follows the shortest paths.
@@ -75,15 +69,15 @@ Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to 
 			EMIT(id, result)
 
 ### Algorithm of computing betweenness centrality
-The idea of algorithm we implemented is from [Ulrik Brandes](http://www.inf.uni-konstanz.de/algo/publications/b-vspbc-08.pdf)
+The idea of algorithm we implemented is from [David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/Parallel%20Algorithms%20for%20Evaluating%20Centrality%20Indices%20in%20Real-world%20Networks.pdf)
 Assume a graph G = (V,E), n is the number of vertices, and m is the number of edges. The main idea of the algorithm is to perform n breadth-first graph traversals, and augment each traversal to compute the number of shortest paths passing through each vertex. We store a multiset P of predecessors associated with each vertex. Here, a vertex belongs to the predecessor multiset of w if
 
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation2.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation2.png)
 
 where, d(s, v) shortest path from source vertex s to vertex v.
 The predecessor information is used in the dependency accumulation step (step III in Algorithm). Here we introduce the dependency value as 
 
-![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation3.png)
+![physicView](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/pic/equation3.png)
 
 where,  δst (v) is the pairwise dependencies of vertices s and v.
 
