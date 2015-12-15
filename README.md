@@ -77,14 +77,22 @@ Always when running in single thread, we use Dijkstra or Bell-Ford algorithm to 
 ### Algorithm of computing betweenness centrality
 The idea of algorithm we implemented is from [Ulrik Brandes](http://www.inf.uni-konstanz.de/algo/publications/b-vspbc-08.pdf)
 Assume a graph G = (V,E), n is the number of vertices, and m is the number of edges. The main idea of the algorithm is to perform n breadth-first graph traversals, and augment each traversal to compute the number of shortest paths passing through each vertex. We store a multiset P of predecessors associated with each vertex. Here, a vertex belongs to the predecessor multiset of w if
+
 ![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation2.png)
+
 where, d(s, v) shortest path from source vertex s to vertex v.
 The predecessor information is used in the dependency accumulation step (step III in Algorithm). Here we introduce the dependency value as 
+
 ![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation3.png)
+
 where,  δst (v) is the pairwise dependencies of vertices s and v.
+
 ![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation4.png)
+
 Given the information of predecessors of each vertex, we can get the dependency values δ_s (v) without the need to traverse all the other vertices. The new equation is:
+
 ![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/equation5.png)
+
 
 ## EXPERIMENTS
 
