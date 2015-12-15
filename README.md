@@ -126,4 +126,4 @@ We utilized only one node to calculate the speedup performance of the parallel a
 						Figure 4. Speedup performance
 
 
-## CONCLUSION
+
