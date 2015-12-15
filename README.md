@@ -140,7 +140,7 @@ We utilized a single node to calculate the speedup performance of the similar pa
 
 2.[A Faster Parallel Algorithm and Efficient Multithreaded Implementations, David A. Bader](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Parallel%20Algorithm%20and%20Efficient%20Multithreaded%20Implementations.pdf)
 
-3.[A Faster Algorithm for Betweenness Centrality, Ulrik Brandes](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Algorithm%20for%20Betweenness%20Centrality.pdf)
+3.[A Faster Algorithm for Betweenness Centrality, Ulrik Brandes](https://raw.githubusercontent.com/cube2matrix/Krypton/master/doc/paper/A%20Faster%20Algorithm%20for%20Betweenness%20Centrality.pdf)
                         
 
 
