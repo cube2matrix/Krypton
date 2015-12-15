@@ -85,9 +85,9 @@ We test the program on CCR HPC in Buffalo, with computation resources range from
 ### Experiment results and analysis
 
 Based on the CCR system, we compute approximate betweenness centrality for a graph of 244,270 vertices on 96 cores with 128 partitions. The whole progress costs only 6.09 minutes. 
-## Effect of partition number.
+#### Effect of partition number.
 As we can see, when we set the num of partition to be above 6, the runtime efficiency would be dramatically improved
- 
+![physicView](https://github.com/cube2matrix/Krypton/blob/master/doc/pic/partition_effect.png) 
 Figure 1. Partition effect
 
 ## Influence of workload
